@@ -1,0 +1,99 @@
+{
+  "tournament": {
+    "name": "Pickle Yard Moneyball Throwdown",
+    "date": "2026-05-16",
+    "time": "1:00 PM – 5:00 PM",
+    "venue": "Pickle Yard Mauldin",
+    "address": "15 Jenkins Court, Mauldin, SC 29662",
+    "prizePool": {
+      "total": 1000,
+      "currency": "USD",
+      "distribution": { "1st": 500, "2nd": 300, "3rd": 200 }
+    },
+    "entryFee": 60,
+    "teamCap": 12,
+    "format": {
+      "teams": 12,
+      "pools": 2,
+      "teamsPerPool": 6,
+      "poolPlayGames": 5,
+      "poolPlayFormat": "single round robin, game to 15 win by 2",
+      "playoffs": {
+        "qualifiers": 6,
+        "byes": 2,
+        "bracket": [
+          { "match": "QF1", "home": "A2", "away": "B3" },
+          { "match": "QF2", "home": "B2", "away": "A3" },
+          { "match": "SF1", "home": "A1", "away": "QF1 winner" },
+          { "match": "SF2", "home": "B1", "away": "QF2 winner" },
+          { "match": "3P",  "home": "SF1 loser", "away": "SF2 loser" },
+          { "match": "F",   "home": "SF1 winner", "away": "SF2 winner" }
+        ],
+        "playoffFormat": "best of 3 to 11 (final: best of 3 to 15)"
+      }
+    }
+  },
+  "teams": [
+    { "id": "A1", "pool": "A", "name": "Dinks on a Plane",   "p1": "Rahul Syed",   "p2": "Arjun Patel",    "dupr": "4.00" },
+    { "id": "A2", "pool": "A", "name": "Kitchen Cartel",     "p1": "Marcus Lee",   "p2": "Sam Rivera",     "dupr": "3.85" },
+    { "id": "A3", "pool": "A", "name": "Spin Cycle",         "p1": "Jenna Brooks", "p2": "Priya Shah",     "dupr": "3.95" },
+    { "id": "A4", "pool": "A", "name": "Third Shot Dreams",  "p1": "Chris Tanner", "p2": "Evan Cho",       "dupr": "3.75" },
+    { "id": "A5", "pool": "A", "name": "Net Positive",       "p1": "Dana Kim",     "p2": "Lauren Holt",    "dupr": "4.10" },
+    { "id": "A6", "pool": "A", "name": "Ernie's Nephews",    "p1": "Tyler Boone",  "p2": "Nikhil Raman",   "dupr": "3.80" },
+    { "id": "B1", "pool": "B", "name": "Bangers & Dinks",    "p1": "Alex Morgan",  "p2": "Dre Washington", "dupr": "4.05" },
+    { "id": "B2", "pool": "B", "name": "Paddle Mafia",       "p1": "Bryan Nguyen", "p2": "Carla Diaz",     "dupr": "3.90" },
+    { "id": "B3", "pool": "B", "name": "Moneyballers",       "p1": "Jordan Park",  "p2": "Lila Fields",    "dupr": "4.15" },
+    { "id": "B4", "pool": "B", "name": "The Pickle Yardies", "p1": "Nate Burris",  "p2": "Sofi Stephens",  "dupr": "3.85" },
+    { "id": "B5", "pool": "B", "name": "Volley Llamas",      "p1": "Marco Ruiz",   "p2": "Kim Truong",     "dupr": "3.70" },
+    { "id": "B6", "pool": "B", "name": "ATP Freaks",         "p1": "Devon Hale",   "p2": "Trey Jackson",   "dupr": "4.00" }
+  ],
+  "roundRobinSchedule": {
+    "note": "0-indexed within each pool. Circle-method balanced schedule — each team plays 5 games, one per round, 3 matches per round run in parallel.",
+    "rounds": [
+      { "round": 1, "matches": [[0,5],[1,4],[2,3]] },
+      { "round": 2, "matches": [[0,4],[5,3],[1,2]] },
+      { "round": 3, "matches": [[0,3],[4,2],[5,1]] },
+      { "round": 4, "matches": [[0,2],[3,1],[4,5]] },
+      { "round": 5, "matches": [[0,1],[2,5],[3,4]] }
+    ]
+  },
+  "courts": {
+    "total": 6,
+    "note": "Pickle Yard has 6 indoor courts. Pool play fills all 6 every round (A on 1-3, B on 4-6). Playoffs run on Courts 1 and 2; Final is on center Court 1.",
+    "assignments": {
+      "poolA": [1, 2, 3],
+      "poolB": [4, 5, 6],
+      "QF1": 1, "QF2": 2,
+      "SF1": 1, "SF2": 2,
+      "3P":  2,
+      "F":   1
+    }
+  },
+  "registration": {
+    "mechanism": "Fully local — no Google Apps Script, no external services",
+    "storage": "localStorage key: 'py-registrations'",
+    "capturedFields": [
+      "teamName",
+      "p1Name", "p1Dupr", "p1Email", "p1Phone",
+      "p2Name", "p2Dupr", "p2Email", "p2Phone",
+      "shirts", "notes",
+      "pool (auto-assigned, admin-adjustable)",
+      "paid (admin toggle)",
+      "registeredAt (ISO timestamp)",
+      "id (generated client-side)"
+    ],
+    "adminPortal": {
+      "access": "Admin tab on index.html, gated by PIN (default '1987' — change in source for production)",
+      "features": [
+        "Live stats: total teams, slots remaining, paid / unpaid, per-pool counts",
+        "Full registration table (all fields visible)",
+        "Per-team: edit pool (A/B dropdown), toggle paid/unpaid, delete",
+        "Export CSV",
+        "Export JSON",
+        "Seed 12 test teams (for demos)",
+        "Clear all registrations",
+        "Session-scoped unlock (sessionStorage — auto-locks on browser close)"
+      ]
+    }
+  }
+}

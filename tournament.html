@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pickle Yard Moneyball Throwdown — Live Tournament</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --py-green:#009F67; --py-teal:#004A5E; --py-teal-deep:#005763;
+    --py-ink:#141827; --py-cream:#F5F1E6;
+    --py-white:#FFFFFF; --py-accent:#F3BF45;
+    --grad-hero: linear-gradient(135deg, var(--py-teal) 0%, var(--py-teal-deep) 50%, var(--py-green) 100%);
+    --grad-btn:  linear-gradient(135deg, var(--py-green) 0%, #00B877 100%);
+  }
+  body { font-family:'Work Sans',sans-serif; background:var(--py-ink); color:var(--py-white); line-height:1.6; }
+
+  header {
+    background: var(--grad-hero);
+    padding: 2rem; text-align:center;
+    border-bottom: 4px solid var(--py-accent);
+  }
+  header .brand {
+    display:flex; align-items:center; justify-content:center; gap:0.8rem; margin-bottom:0.75rem;
+  }
+  .py-mark { width:44px; height:44px; background:#fff; border-radius:50%; padding:6px; }
+  .py-mark svg { width:100%; height:100%; display:block; }
+  h1 {
+    font-family:'Archivo Black',sans-serif; text-transform:uppercase; letter-spacing:2px;
+    font-size: clamp(1.4rem, 3.5vw, 2.4rem); color: var(--py-white);
+  }
+  h1 span { color: var(--py-accent); }
+  .subline { color: rgba(255,255,255,0.85); font-size:0.95rem; margin-top:0.25rem; }
+
+  nav.tabs {
+    background: var(--py-ink); border-bottom: 2px solid var(--py-green);
+    display:flex; justify-content:center; gap:0; overflow-x:auto; position:sticky; top:0; z-index:50;
+  }
+  nav.tabs button {
+    background:transparent; border:none; color: var(--py-white);
+    padding: 1rem 1.5rem; font-family:'Work Sans',sans-serif; font-weight:600;
+    text-transform:uppercase; letter-spacing:1px; cursor:pointer;
+    border-bottom: 3px solid transparent; transition: all 0.2s;
+  }
+  nav.tabs button:hover { color: var(--py-accent); }
+  nav.tabs button.active { color: var(--py-accent); border-bottom-color: var(--py-accent); }
+
+  main { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+  section.view { display:none; }
+  section.view.active { display:block; }
+
+  h2 {
+    font-family:'Archivo Black',sans-serif; text-transform:uppercase;
+    letter-spacing: 2px; font-size: 1.6rem; margin-bottom: 1.25rem;
+    padding-bottom: 0.6rem; border-bottom: 3px solid var(--py-green);
+  }
+  h3 {
+    font-family:'Archivo Black',sans-serif; text-transform:uppercase;
+    letter-spacing:1.5px; color: var(--py-accent); font-size: 1.1rem; margin: 1rem 0;
+  }
+
+  .btn {
+    padding: 0.6rem 1.2rem; background: var(--grad-btn); color:var(--py-white);
+    border:none; border-radius:8px; font-family:'Archivo Black',sans-serif;
+    text-transform:uppercase; letter-spacing:1px; font-size:0.85rem; cursor:pointer;
+    box-shadow: 0 4px 12px rgba(0,159,103,0.3);
+  }
+  .btn.ghost { background:transparent; border:2px solid var(--py-green); color: var(--py-green); box-shadow:none; }
+  .btn.danger { background: linear-gradient(135deg, #DD3333 0%, #AA2222 100%); }
+
+  /* ====== STANDINGS ====== */
+  .pools-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .pool-card {
+    background: rgba(0,74,94,0.35); border:1px solid rgba(0,159,103,0.3);
+    border-radius: 12px; overflow:hidden;
+  }
+  .pool-header {
+    padding: 1rem 1.25rem;
+    background: var(--py-teal);
+    color: var(--py-white);
+    font-family:'Archivo Black',sans-serif;
+    text-transform:uppercase; letter-spacing: 2px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .pool-B .pool-header { background: var(--py-green); }
+  table.standings { width:100%; border-collapse:collapse; }
+  table.standings th, table.standings td { padding: 0.7rem; text-align:left; border-bottom: 1px solid rgba(0,159,103,0.15); }
+  table.standings th { background: rgba(20,24,39,0.6); font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color: var(--py-accent); }
+  table.standings td.num { text-align:center; font-family:'Archivo Black',sans-serif; width:40px; }
+  table.standings tr.qualifies td.num { color: var(--py-accent); }
+  table.standings tr.bye td.name::after {
+    content:' 🏆 BYE'; color: var(--py-accent); font-size:0.7rem; font-weight:700; letter-spacing:1px;
+  }
+  .team-name-cell { font-weight:700; }
+  .team-sub { font-size:0.78rem; color: rgba(255,255,255,0.6); display:block; }
+
+  /* ====== MATCHES ====== */
+  .round-section { margin-bottom: 2rem; }
+  .round-title {
+    font-family:'Archivo Black',sans-serif; text-transform:uppercase;
+    letter-spacing:2px; color: var(--py-accent); font-size:1rem;
+    padding: 0.6rem 1rem; background: rgba(0,74,94,0.4);
+    border-left: 4px solid var(--py-green); border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  .match-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(340px,1fr)); gap: 0.9rem; }
+  .match {
+    background: rgba(0,74,94,0.3);
+    border:1px solid rgba(0,159,103,0.25);
+    border-radius: 10px;
+    padding: 1rem;
+    transition: border-color 0.2s;
+  }
+  .match.completed { border-color: var(--py-accent); background: rgba(243,191,69,0.08); }
+  .match-head {
+    display:flex; justify-content:space-between; font-size:0.75rem;
+    color: var(--py-accent); text-transform:uppercase; letter-spacing:1px; font-weight:700;
+    margin-bottom: 0.6rem;
+  }
+  .match-row {
+    display:grid; grid-template-columns: 1fr 60px; gap:0.5rem;
+    padding: 0.4rem 0; align-items:center;
+  }
+  .match-row + .match-row { border-top: 1px dashed rgba(0,159,103,0.2); }
+  .match-row.winner .team-tag { color: var(--py-accent); font-weight:800; }
+  .team-tag { font-weight:600; font-size:0.95rem; }
+  .team-tag small { display:block; color: rgba(255,255,255,0.55); font-size:0.75rem; font-weight:400; }
+  .score-input {
+    width:100%; padding: 0.4rem; text-align:center;
+    background: rgba(20,24,39,0.7); border:1px solid rgba(0,159,103,0.4);
+    border-radius: 6px; color: var(--py-white); font-family:'Archivo Black',sans-serif; font-size:1rem;
+  }
+  .score-input:focus { outline:none; border-color: var(--py-accent); }
+
+  /* ====== COURT BADGE ====== */
+  .court-badge {
+    background: var(--py-accent);
+    color: var(--py-ink);
+    font-family:'Archivo Black',sans-serif;
+    font-size: 0.7rem; letter-spacing: 1px;
+    padding: 0.22rem 0.55rem;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+  .court-badge.lg {
+    font-size: 1rem; padding: 0.35rem 0.75rem;
+  }
+
+  /* ====== COURTS VIEW ====== */
+  .courts-grid {
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+    gap: 1.25rem;
+  }
+  .court-panel {
+    background: rgba(0,74,94,0.35);
+    border: 2px solid rgba(0,159,103,0.3);
+    border-radius: 12px;
+    overflow:hidden;
+  }
+  .court-panel .court-head {
+    background: var(--py-teal-deep);
+    padding: 0.85rem 1rem;
+    display:flex; justify-content:space-between; align-items:center;
+    border-bottom: 3px solid var(--py-accent);
+  }
+  .court-panel .court-head strong {
+    font-family:'Archivo Black',sans-serif;
+    text-transform:uppercase; letter-spacing:2px;
+    font-size: 1rem;
+  }
+  .court-panel .court-head .pool-label {
+    font-size:0.75rem; color: var(--py-accent);
+    text-transform:uppercase; letter-spacing:1px;
+  }
+  .court-panel ul { list-style:none; padding:0; margin:0; }
+  .court-panel li {
+    padding: 0.6rem 1rem;
+    border-top: 1px solid rgba(0,159,103,0.15);
+    display:grid; grid-template-columns: 80px 1fr 70px;
+    gap: 0.75rem; align-items:center;
+    font-size: 0.9rem;
+  }
+  .court-panel li:first-child { border-top: none; }
+  .court-panel li.done { opacity: 0.55; }
+  .court-panel li .round-tag {
+    font-family:'Archivo Black',sans-serif;
+    font-size: 0.7rem; color: var(--py-accent);
+    letter-spacing: 1px;
+  }
+  .court-panel li .score-tag {
+    font-family:'Archivo Black',sans-serif;
+    text-align:right;
+    color: var(--py-white);
+  }
+  .court-panel li .score-tag .pending { color: rgba(255,255,255,0.4); font-weight:400; }
+  .court-panel li.playoff { background: rgba(243,191,69,0.08); }
+
+  /* ====== BRACKET ====== */
+  .bracket {
+    display:flex; gap: 2rem; overflow-x:auto; padding: 1rem 0;
+  }
+  .bracket-round { display:flex; flex-direction:column; justify-content:space-around; min-width: 240px; gap:1rem; }
+  .bracket-round h4 { color: var(--py-accent); text-transform:uppercase; letter-spacing:2px; font-size:0.85rem; margin-bottom:0.5rem; }
+  .bracket-match {
+    background: rgba(0,74,94,0.35);
+    border:1px solid rgba(0,159,103,0.3);
+    border-radius: 8px;
+    padding: 0.75rem;
+    min-height: 90px;
+  }
+  .bracket-match.final { border-color: var(--py-accent); background: rgba(243,191,69,0.08); }
+  .bracket-team {
+    display:flex; justify-content:space-between;
+    padding: 0.3rem 0; font-size:0.9rem;
+  }
+  .bracket-team.winner { color: var(--py-accent); font-weight:700; }
+  .bracket-team + .bracket-team { border-top: 1px dashed rgba(0,159,103,0.2); }
+
+  /* ====== TOOLBAR ====== */
+  .toolbar {
+    display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom: 1.5rem;
+    padding: 1rem; background: rgba(0,74,94,0.3); border-radius: 10px;
+    align-items:center;
+  }
+  .toolbar .spacer { flex:1; }
+  .notice {
+    padding: 0.85rem 1rem; border-radius:8px;
+    background: rgba(0,159,103,0.15); border-left: 4px solid var(--py-green);
+    margin-bottom: 1.5rem; color: rgba(255,255,255,0.9);
+  }
+  .notice strong { color: var(--py-accent); }
+
+  @media (max-width: 768px) {
+    .pools-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="py-mark">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 172 171">
+        <g transform="translate(0.815 -0.5)">
+          <path d="M108.2,39.617a68.586,68.586,0,1,0,48.5,20.088,68.135,68.135,0,0,0-48.5-20.088M149.931,149.93A59.012,59.012,0,1,1,167.215,108.2a58.627,58.627,0,0,1-17.284,41.728" transform="translate(-22.314 -22.597)" fill="#009F67"/>
+          <path d="M164.484,52.283a85.875,85.875,0,1,0,6.729,33.323,85.324,85.324,0,0,0-6.729-33.323M139.37,139.369A76.032,76.032,0,1,1,31.844,31.843,76.032,76.032,0,1,1,139.37,139.369" transform="translate(0.282)" fill="#009F67"/>
+          <path d="M177.144,133.63a1.876,1.876,0,0,0-1.175.457,2.4,2.4,0,0,0-.783,2.088v.457l.065,19.792c0,6.917-.065,13.9-7.569,13.9-6.4,0-8.353-3.72-8.353-9.071V148.116c0-7.852-3.064-14.485-11.244-15.793a26.368,26.368,0,0,0,.151-2.845c0-11.289-8.744-17.553-23.361-17.684H105.038v7.439a2.105,2.105,0,0,0,2.414,2.284h4.372v46.4c0,1.631.914,2.61,2.219,2.61h7.5V151.664c10.65-1.069,18.8-4.157,23.16-10.163,2.822.081,4.378,1.589,4.378,4.136l-.065,15.877c0,7.765,4.568,18.01,16.835,18.01a14.015,14.015,0,0,0,10.18-4.046l.075.591.012,3.892c0,2.747-1.971,4.18-5.494,3.7a2.588,2.588,0,0,0-2.747,2.03l-1.672,5.912c14.332,3.224,19.287-4.359,19.287-13.914l-.065-44.061Zm-55.6,9.029V121.517c13.312.065,16.7,3.458,16.7,8.678,0,9.658-9.723,12.4-16.7,12.464" transform="translate(-59.628 -63.765)" fill="#004A5E"/>
+        </g>
+      </svg>
+    </div>
+    <h1>Moneyball <span>Throwdown</span> — Live</h1>
+  </div>
+  <div class="subline">May 16, 2026 · Pickle Yard Mauldin · $1,000 Purse</div>
+</header>
+
+<nav class="tabs">
+  <button class="active" data-view="standings">Standings</button>
+  <button data-view="pool">Pool Play</button>
+  <button data-view="courts">Courts</button>
+  <button data-view="bracket">Playoff Bracket</button>
+  <button data-view="admin">Admin</button>
+</nav>
+
+<main>
+  <!-- STANDINGS -->
+  <section id="standings" class="view active">
+    <div class="notice">
+      <strong>How it works:</strong> Enter scores in <em>Pool Play</em>. Standings update automatically. Top 3 from each pool advance to the Playoff Bracket. The #1 seed in each pool gets a bye.
+    </div>
+    <div class="pools-grid">
+      <div class="pool-card pool-A">
+        <div class="pool-header"><span>Pool A</span><span id="pool-a-status">— / 15 matches</span></div>
+        <table class="standings"><thead>
+          <tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PF</th><th>PA</th><th>Diff</th></tr>
+        </thead><tbody id="standings-a"></tbody></table>
+      </div>
+      <div class="pool-card pool-B">
+        <div class="pool-header"><span>Pool B</span><span id="pool-b-status">— / 15 matches</span></div>
+        <table class="standings"><thead>
+          <tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PF</th><th>PA</th><th>Diff</th></tr>
+        </thead><tbody id="standings-b"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- POOL PLAY -->
+  <section id="pool" class="view">
+    <h2>Pool Play — Round Robin</h2>
+    <div class="notice">
+      <strong>Courts 1–3:</strong> Pool A matches · <strong>Courts 4–6:</strong> Pool B matches. All 6 courts run in parallel each round.
+    </div>
+    <div id="pool-matches"></div>
+  </section>
+
+  <!-- COURTS -->
+  <section id="courts" class="view">
+    <h2>Court Assignments</h2>
+    <div class="notice">
+      <strong>Pickle Yard has 6 indoor courts.</strong> Pool play uses all 6 simultaneously (A on 1–3, B on 4–6). Playoffs run on Courts 1 &amp; 2, with the <strong>Final on center Court 1</strong>.
+    </div>
+    <div class="courts-grid" id="courts-grid"></div>
+  </section>
+
+  <!-- BRACKET -->
+  <section id="bracket" class="view">
+    <h2>Playoff Bracket</h2>
+    <div class="notice" id="bracket-notice">
+      Bracket locks when all 30 pool-play matches are complete.
+    </div>
+    <div class="bracket" id="bracket-container"></div>
+  </section>
+
+  <!-- ADMIN -->
+  <section id="admin" class="view">
+    <h2>Admin Tools</h2>
+    <div class="notice" id="sync-notice">
+      <strong>Teams source:</strong> <span id="source-info">demo data</span>
+    </div>
+    <div class="toolbar">
+      <button class="btn" onclick="syncFromRegistrations()">🔄 Sync teams from Registrations</button>
+      <button class="btn ghost" onclick="simulateRandom()">🎲 Simulate random pool results</button>
+      <button class="btn ghost" onclick="clearScores()">Clear all scores</button>
+      <button class="btn ghost" onclick="resetToTestData()">Reset to demo data</button>
+      <div class="spacer"></div>
+      <button class="btn danger" onclick="fullReset()">Full reset</button>
+    </div>
+    <div class="notice">
+      <strong>Validation:</strong> <span id="validation-msg">—</span>
+    </div>
+    <div class="card" style="background:rgba(0,74,94,0.3); padding:1.25rem; border-radius:10px;">
+      <h3>Exported State</h3>
+      <pre id="export-json" style="background:rgba(20,24,39,0.7); padding:1rem; border-radius:8px; overflow:auto; max-height:400px; font-size:0.8rem; color:var(--py-accent);"></pre>
+    </div>
+  </section>
+</main>
+
+<script>
+// ============================================================
+//  PICKLE YARD MONEYBALL THROWDOWN — Tournament Engine
+// ============================================================
+
+const TEST_TEAMS = [
+  // Pool A — seeds 1-6
+  { id:'A1', pool:'A', name:"Dinks on a Plane",   p1:"Rahul Syed",   p2:"Arjun Patel",   dupr:"4.00" },
+  { id:'A2', pool:'A', name:"Kitchen Cartel",     p1:"Marcus Lee",   p2:"Sam Rivera",    dupr:"3.85" },
+  { id:'A3', pool:'A', name:"Spin Cycle",         p1:"Jenna Brooks", p2:"Priya Shah",    dupr:"3.95" },
+  { id:'A4', pool:'A', name:"Third Shot Dreams",  p1:"Chris Tanner", p2:"Evan Cho",      dupr:"3.75" },
+  { id:'A5', pool:'A', name:"Net Positive",       p1:"Dana Kim",     p2:"Lauren Holt",   dupr:"4.10" },
+  { id:'A6', pool:'A', name:"Ernie's Nephews",    p1:"Tyler Boone",  p2:"Nikhil Raman",  dupr:"3.80" },
+  // Pool B — seeds 1-6
+  { id:'B1', pool:'B', name:"Bangers & Dinks",    p1:"Alex Morgan",  p2:"Dre Washington",dupr:"4.05" },
+  { id:'B2', pool:'B', name:"Paddle Mafia",       p1:"Bryan Nguyen", p2:"Carla Diaz",    dupr:"3.90" },
+  { id:'B3', pool:'B', name:"Moneyballers",       p1:"Jordan Park",  p2:"Lila Fields",   dupr:"4.15" },
+  { id:'B4', pool:'B', name:"The Pickle Yardies", p1:"Nate Burris",  p2:"Sofi Stephens", dupr:"3.85" },
+  { id:'B5', pool:'B', name:"Volley Llamas",      p1:"Marco Ruiz",   p2:"Kim Truong",    dupr:"3.70" },
+  { id:'B6', pool:'B', name:"ATP Freaks",         p1:"Devon Hale",   p2:"Trey Jackson",  dupr:"4.00" }
+];
+
+// 5-round balanced round-robin for 6 teams (standard circle method)
+// Each round has 3 parallel matches; each team plays once per round
+const RR_SCHEDULE = [
+  // [ [teamA_index, teamB_index], ... ]  (0-indexed within pool)
+  [[0,5],[1,4],[2,3]], // Round 1
+  [[0,4],[5,3],[1,2]], // Round 2
+  [[0,3],[4,2],[5,1]], // Round 3
+  [[0,2],[3,1],[4,5]], // Round 4
+  [[0,1],[2,5],[3,4]], // Round 5
+];
+
+// ---------- COURT PLAN ----------
+// Pickle Yard has 6 indoor courts. Pool play fills all 6 every round:
+//   Pool A matches  → Courts 1, 2, 3
+//   Pool B matches  → Courts 4, 5, 6
+// Playoffs use 2 courts (1 and 2), with the Final on center Court 1.
+const POOL_COURT = { A: [1,2,3], B: [4,5,6] };
+const PLAYOFF_COURTS = { QF1:1, QF2:2, SF1:1, SF2:2, '3P':2, F:1 };
+
+// ---------- STATE ----------
+function emptyState() {
+  const matches = [];
+  ['A','B'].forEach(pool => {
+    RR_SCHEDULE.forEach((round, rIdx) => {
+      round.forEach((pair, mIdx) => {
+        matches.push({
+          id: `${pool}-R${rIdx+1}-M${mIdx+1}`,
+          phase:'pool', pool, round: rIdx+1,
+          court: POOL_COURT[pool][mIdx],
+          homeId: `${pool}${pair[0]+1}`,
+          awayId: `${pool}${pair[1]+1}`,
+          homeScore: null, awayScore: null
+        });
+      });
+    });
+  });
+  // Playoff placeholders — filled in when pool play completes
+  matches.push({ id:'QF1', phase:'playoff', round:'QF', court:PLAYOFF_COURTS.QF1, label:'QF1 · A2 vs B3', homeId:null, awayId:null, homeScore:null, awayScore:null });
+  matches.push({ id:'QF2', phase:'playoff', round:'QF', court:PLAYOFF_COURTS.QF2, label:'QF2 · B2 vs A3', homeId:null, awayId:null, homeScore:null, awayScore:null });
+  matches.push({ id:'SF1', phase:'playoff', round:'SF', court:PLAYOFF_COURTS.SF1, label:'SF1 · A1 vs QF1 W', homeId:null, awayId:null, homeScore:null, awayScore:null });
+  matches.push({ id:'SF2', phase:'playoff', round:'SF', court:PLAYOFF_COURTS.SF2, label:'SF2 · B1 vs QF2 W', homeId:null, awayId:null, homeScore:null, awayScore:null });
+  matches.push({ id:'3P',  phase:'playoff', round:'3P', court:PLAYOFF_COURTS['3P'], label:'3rd Place · SF Losers', homeId:null, awayId:null, homeScore:null, awayScore:null });
+  matches.push({ id:'F',   phase:'playoff', round:'F',  court:PLAYOFF_COURTS.F,  label:'Final · SF Winners',    homeId:null, awayId:null, homeScore:null, awayScore:null });
+  return { teams: TEST_TEAMS.slice(), matches };
+}
+
+let STATE = load();
+
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem('py-tournament-state'));
+    if (s && s.teams && s.matches) {
+      // migrate legacy state that pre-dates court assignments
+      const needsCourts = s.matches.some(m => m.court == null);
+      if (needsCourts) {
+        s.matches.forEach(m => {
+          if (m.court != null) return;
+          if (m.phase === 'pool') {
+            // derive from match id like "A-R1-M2" → index 1 within pool
+            const mIdx = Number(m.id.split('-M')[1]) - 1;
+            m.court = POOL_COURT[m.pool][mIdx];
+          } else if (PLAYOFF_COURTS[m.id]) {
+            m.court = PLAYOFF_COURTS[m.id];
+          }
+        });
+      }
+      return s;
+    }
+  } catch(e) {}
+  return emptyState();
+}
+function save() { localStorage.setItem('py-tournament-state', JSON.stringify(STATE)); }
+
+// ---------- LOOKUPS ----------
+const teamById = id => STATE.teams.find(t => t.id === id);
+const matchById = id => STATE.matches.find(m => m.id === id);
+
+// ---------- STANDINGS ----------
+function computeStandings(pool) {
+  const teams = STATE.teams.filter(t => t.pool === pool);
+  const stats = Object.fromEntries(teams.map(t => [t.id, { team:t, w:0,l:0,pf:0,pa:0 }]));
+  STATE.matches.filter(m => m.phase==='pool' && m.pool===pool && m.homeScore!=null && m.awayScore!=null).forEach(m => {
+    const h = stats[m.homeId], a = stats[m.awayId];
+    h.pf += m.homeScore; h.pa += m.awayScore;
+    a.pf += m.awayScore; a.pa += m.homeScore;
+    if (m.homeScore > m.awayScore) { h.w++; a.l++; }
+    else if (m.awayScore > m.homeScore) { a.w++; h.l++; }
+  });
+  const arr = Object.values(stats);
+  arr.sort((x,y) => y.w - x.w || (y.pf - y.pa) - (x.pf - x.pa) || y.pf - x.pf);
+  return arr;
+}
+function poolPlayComplete() {
+  return STATE.matches.filter(m => m.phase==='pool').every(m => m.homeScore!=null && m.awayScore!=null);
+}
+function poolProgress(pool) {
+  const all = STATE.matches.filter(m => m.phase==='pool' && m.pool===pool);
+  const done = all.filter(m => m.homeScore!=null && m.awayScore!=null);
+  return { done: done.length, total: all.length };
+}
+
+// ---------- PLAYOFF WIRING ----------
+function wirePlayoffs() {
+  if (!poolPlayComplete()) return;
+  const sA = computeStandings('A'), sB = computeStandings('B');
+  matchById('QF1').homeId = sA[1].team.id; // A2
+  matchById('QF1').awayId = sB[2].team.id; // B3
+  matchById('QF2').homeId = sB[1].team.id; // B2
+  matchById('QF2').awayId = sA[2].team.id; // A3
+
+  const qf1 = matchById('QF1'), qf2 = matchById('QF2');
+  const qf1Winner = winnerOf(qf1), qf2Winner = winnerOf(qf2);
+
+  matchById('SF1').homeId = sA[0].team.id;                // A1
+  matchById('SF1').awayId = qf1Winner;
+  matchById('SF2').homeId = sB[0].team.id;                // B1
+  matchById('SF2').awayId = qf2Winner;
+
+  const sf1 = matchById('SF1'), sf2 = matchById('SF2');
+  matchById('3P').homeId = loserOf(sf1);
+  matchById('3P').awayId = loserOf(sf2);
+  matchById('F').homeId  = winnerOf(sf1);
+  matchById('F').awayId  = winnerOf(sf2);
+}
+function winnerOf(m) {
+  if (m.homeScore==null || m.awayScore==null) return null;
+  return m.homeScore > m.awayScore ? m.homeId : m.awayId;
+}
+function loserOf(m) {
+  if (m.homeScore==null || m.awayScore==null) return null;
+  return m.homeScore > m.awayScore ? m.awayId : m.homeId;
+}
+
+// ---------- RENDER: Standings ----------
+function renderStandings() {
+  ['A','B'].forEach(p => {
+    const rows = computeStandings(p);
+    const tbody = document.getElementById('standings-'+p.toLowerCase());
+    tbody.innerHTML = rows.map((r,i) => {
+      const qualifies = i < 3;
+      const bye = i === 0;
+      const t = r.team;
+      return `<tr class="${qualifies?'qualifies':''} ${bye?'bye':''}">
+        <td class="num">${i+1}</td>
+        <td class="name"><span class="team-name-cell">${t.name}</span><small class="team-sub">${t.p1} · ${t.p2}</small></td>
+        <td>${r.w}</td><td>${r.l}</td>
+        <td>${r.pf}</td><td>${r.pa}</td>
+        <td>${(r.pf-r.pa) >= 0 ? '+' : ''}${r.pf-r.pa}</td>
+      </tr>`;
+    }).join('');
+    const prog = poolProgress(p);
+    document.getElementById('pool-'+p.toLowerCase()+'-status').textContent = `${prog.done} / ${prog.total} matches`;
+  });
+}
+
+// ---------- RENDER: Pool matches ----------
+function renderPoolMatches() {
+  const container = document.getElementById('pool-matches');
+  container.innerHTML = '';
+  for (let round = 1; round <= 5; round++) {
+    const rs = document.createElement('div');
+    rs.className = 'round-section';
+    rs.innerHTML = `<div class="round-title">Round ${round}</div><div class="match-grid"></div>`;
+    const grid = rs.querySelector('.match-grid');
+    STATE.matches.filter(m => m.phase==='pool' && m.round===round).forEach(m => {
+      grid.appendChild(matchCard(m));
+    });
+    container.appendChild(rs);
+  }
+}
+function matchCard(m) {
+  const home = teamById(m.homeId), away = teamById(m.awayId);
+  const done = m.homeScore!=null && m.awayScore!=null;
+  const homeWin = done && m.homeScore > m.awayScore;
+  const awayWin = done && m.awayScore > m.homeScore;
+  const div = document.createElement('div');
+  div.className = 'match' + (done ? ' completed' : '');
+  div.innerHTML = `
+    <div class="match-head">
+      <span>${m.pool ? `Pool ${m.pool}` : m.label} · ${m.round==='QF'||m.round==='SF'||m.round==='3P'||m.round==='F' ? m.round : 'R'+m.round}</span>
+      <span class="court-badge" title="Court assignment">COURT ${m.court}</span>
+    </div>
+    <div class="match-row ${homeWin?'winner':''}">
+      <div class="team-tag">${home ? home.name : '—'}<small>${home ? home.p1+' · '+home.p2 : ''}</small></div>
+      <input class="score-input" type="number" min="0" max="25" value="${m.homeScore ?? ''}" data-match="${m.id}" data-side="home">
+    </div>
+    <div class="match-row ${awayWin?'winner':''}">
+      <div class="team-tag">${away ? away.name : '—'}<small>${away ? away.p1+' · '+away.p2 : ''}</small></div>
+      <input class="score-input" type="number" min="0" max="25" value="${m.awayScore ?? ''}" data-match="${m.id}" data-side="away">
+    </div>`;
+  div.querySelectorAll('.score-input').forEach(inp => {
+    inp.addEventListener('change', e => {
+      const id = e.target.dataset.match;
+      const side = e.target.dataset.side;
+      const v = e.target.value === '' ? null : Number(e.target.value);
+      const match = matchById(id);
+      match[side+'Score'] = v;
+      wirePlayoffs();
+      save();
+      renderAll();
+    });
+  });
+  return div;
+}
+
+// ---------- RENDER: Bracket ----------
+function renderBracket() {
+  const container = document.getElementById('bracket-container');
+  const notice = document.getElementById('bracket-notice');
+  if (!poolPlayComplete()) {
+    notice.innerHTML = `<strong>Bracket locked.</strong> ${STATE.matches.filter(m=>m.phase==='pool' && m.homeScore!=null).length} of 30 pool matches complete — finish pool play to unlock.`;
+    container.innerHTML = '';
+    return;
+  }
+  notice.innerHTML = '<strong>Bracket is live.</strong> Winners auto-advance as scores are entered.';
+
+  const sA = computeStandings('A'), sB = computeStandings('B');
+  const byeCol = `
+    <div class="bracket-round">
+      <h4>Pool Winners (Bye)</h4>
+      <div class="bracket-match">
+        <div class="bracket-team winner">${sA[0].team.name}<span>A1</span></div>
+      </div>
+      <div class="bracket-match">
+        <div class="bracket-team winner">${sB[0].team.name}<span>B1</span></div>
+      </div>
+    </div>`;
+  const qfCol = bracketRoundCol('Quarterfinals', ['QF1','QF2']);
+  const sfCol = bracketRoundCol('Semifinals',   ['SF1','SF2']);
+  const fCol  = `<div class="bracket-round">
+      <h4>3rd Place</h4>${bracketMatchHTML(matchById('3P'))}
+      <h4 style="margin-top:1.5rem;">Final 🏆</h4>${bracketMatchHTML(matchById('F'), true)}
+    </div>`;
+  container.innerHTML = byeCol + qfCol + sfCol + fCol;
+
+  container.querySelectorAll('.score-input').forEach(inp => {
+    inp.addEventListener('change', e => {
+      const id = e.target.dataset.match, side = e.target.dataset.side;
+      const v = e.target.value === '' ? null : Number(e.target.value);
+      matchById(id)[side+'Score'] = v;
+      wirePlayoffs();
+      save(); renderAll();
+    });
+  });
+}
+function bracketRoundCol(title, ids) {
+  return `<div class="bracket-round">
+    <h4>${title}</h4>
+    ${ids.map(id => bracketMatchHTML(matchById(id))).join('')}
+  </div>`;
+}
+function bracketMatchHTML(m, isFinal=false) {
+  const home = teamById(m.homeId), away = teamById(m.awayId);
+  const done = m.homeScore!=null && m.awayScore!=null;
+  const hW = done && m.homeScore > m.awayScore;
+  const aW = done && m.awayScore > m.homeScore;
+  return `<div class="bracket-match ${isFinal?'final':''}">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+      <span style="font-size:0.7rem;letter-spacing:1px;color:rgba(255,255,255,0.5);">${m.id}</span>
+      <span class="court-badge">COURT ${m.court}</span>
+    </div>
+    <div class="bracket-team ${hW?'winner':''}">
+      <span>${home ? home.name : '<em style="opacity:0.5;">TBD</em>'}</span>
+      <input class="score-input" style="width:50px;padding:0.2rem;" type="number" min="0" max="25"
+             value="${m.homeScore ?? ''}" data-match="${m.id}" data-side="home">
+    </div>
+    <div class="bracket-team ${aW?'winner':''}">
+      <span>${away ? away.name : '<em style="opacity:0.5;">TBD</em>'}</span>
+      <input class="score-input" style="width:50px;padding:0.2rem;" type="number" min="0" max="25"
+             value="${m.awayScore ?? ''}" data-match="${m.id}" data-side="away">
+    </div>
+  </div>`;
+}
+
+// ---------- VALIDATION ----------
+function validate() {
+  const errors = [];
+  // 1. Team counts
+  const a = STATE.teams.filter(t=>t.pool==='A').length;
+  const b = STATE.teams.filter(t=>t.pool==='B').length;
+  if (a !== 6) errors.push(`Pool A has ${a} teams (expected 6).`);
+  if (b !== 6) errors.push(`Pool B has ${b} teams (expected 6).`);
+  // 2. Round robin completeness
+  ['A','B'].forEach(p => {
+    const pairs = new Set();
+    const teams = STATE.teams.filter(t=>t.pool===p).map(t=>t.id);
+    STATE.matches.filter(m=>m.phase==='pool' && m.pool===p).forEach(m=>{
+      const key = [m.homeId,m.awayId].sort().join('|');
+      pairs.add(key);
+    });
+    const expected = teams.length * (teams.length-1) / 2;
+    if (pairs.size !== expected) errors.push(`Pool ${p} has ${pairs.size} unique pairings (expected ${expected}).`);
+  });
+  // 3. Each team plays exactly 5 games per pool
+  ['A','B'].forEach(p => {
+    const teams = STATE.teams.filter(t=>t.pool===p);
+    teams.forEach(t => {
+      const count = STATE.matches.filter(m => m.phase==='pool' && (m.homeId===t.id||m.awayId===t.id)).length;
+      if (count !== 5) errors.push(`Team ${t.id} (${t.name}) plays ${count} games in pool play (expected 5).`);
+    });
+  });
+  // 4. Playoff structure count
+  const pMatches = STATE.matches.filter(m=>m.phase==='playoff');
+  if (pMatches.length !== 6) errors.push(`Playoff has ${pMatches.length} matches (expected 6: 2 QF + 2 SF + 3P + F).`);
+  return errors;
+}
+
+// ---------- RENDER: Admin ----------
+function renderAdmin() {
+  const errs = validate();
+  const msg = document.getElementById('validation-msg');
+  if (!errs.length) {
+    msg.innerHTML = `<span style="color:var(--py-green);">✅ Structure valid.</span> 12 teams · 2 pools · 30 pool matches · 5 games per team · 6 playoff matches.`;
+  } else {
+    msg.innerHTML = `<span style="color:#FF6B6B;">❌ ${errs.length} issue(s):</span><ul>${errs.map(e=>'<li>'+e+'</li>').join('')}</ul>`;
+  }
+  document.getElementById('export-json').textContent = JSON.stringify(STATE, null, 2);
+}
+
+// ---------- ADMIN ACTIONS ----------
+function simulateRandom() {
+  STATE.matches.filter(m=>m.phase==='pool').forEach(m => {
+    // Games to 15, win by 2
+    const winnerHome = Math.random() < 0.5;
+    const winScore = 15 + Math.floor(Math.random()*4); // 15-18
+    const loseScore = Math.floor(Math.random() * Math.min(winScore-2, 13));
+    m.homeScore = winnerHome ? winScore : loseScore;
+    m.awayScore = winnerHome ? loseScore : winScore;
+  });
+  wirePlayoffs();
+  save(); renderAll();
+}
+function clearScores() {
+  STATE.matches.forEach(m => { m.homeScore = null; m.awayScore = null; });
+  STATE.matches.filter(m=>m.phase==='playoff').forEach(m => { m.homeId=null; m.awayId=null; });
+  save(); renderAll();
+}
+function resetToTestData() {
+  STATE = emptyState();
+  save(); renderAll();
+}
+function fullReset() {
+  if (!confirm('Wipe all tournament data?')) return;
+  localStorage.removeItem('py-tournament-state');
+  STATE = emptyState();
+  renderAll();
+}
+
+// Pull teams from the registration portal (index.html stores them in 'py-registrations').
+// Maps the first 6 Pool A registrations → A1..A6, first 6 Pool B → B1..B6.
+function syncFromRegistrations() {
+  let regs = [];
+  try { regs = JSON.parse(localStorage.getItem('py-registrations') || '[]'); } catch(e) {}
+  if (!regs.length) { alert('No registrations found. Register 12 teams on the homepage first — or use "Seed 12 test teams" in its Admin panel.'); return; }
+  const poolA = regs.filter(r => r.pool === 'A');
+  const poolB = regs.filter(r => r.pool === 'B');
+  if (poolA.length !== 6 || poolB.length !== 6) {
+    if (!confirm(`Registrations are not balanced (Pool A: ${poolA.length}, Pool B: ${poolB.length}). Expected 6 per pool. Sync anyway?`)) return;
+  }
+  // Drop any existing scores — fresh bracket based on new teams
+  STATE = emptyState();
+  STATE.teams = [];
+  poolA.slice(0,6).forEach((r, i) => STATE.teams.push({
+    id: 'A'+(i+1), pool: 'A', name: r.teamName,
+    p1: r.p1Name, p2: r.p2Name,
+    dupr: r.p1Dupr || r.p2Dupr || '',
+    srcId: r.id
+  }));
+  poolB.slice(0,6).forEach((r, i) => STATE.teams.push({
+    id: 'B'+(i+1), pool: 'B', name: r.teamName,
+    p1: r.p1Name, p2: r.p2Name,
+    dupr: r.p1Dupr || r.p2Dupr || '',
+    srcId: r.id
+  }));
+  STATE.source = 'registrations';
+  save(); renderAll();
+  alert(`Synced ${STATE.teams.length} teams from the registration portal. Scores have been reset.`);
+}
+
+function updateSourceInfo() {
+  const el = document.getElementById('source-info');
+  if (!el) return;
+  el.innerHTML = STATE.source === 'registrations'
+    ? `<span style="color:var(--py-green);">registered teams</span> (${STATE.teams.length} teams · synced from index.html)`
+    : `<span style="color:var(--py-accent);">demo data</span> — click <em>Sync teams from Registrations</em> to use real teams`;
+}
+
+// ---------- TAB NAV ----------
+document.querySelectorAll('nav.tabs button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('nav.tabs button').forEach(x=>x.classList.toggle('active', x===b));
+    document.querySelectorAll('section.view').forEach(v=>v.classList.toggle('active', v.id===b.dataset.view));
+  });
+});
+
+// ---------- RENDER: Courts ----------
+function renderCourts() {
+  const grid = document.getElementById('courts-grid');
+  grid.innerHTML = '';
+  for (let c = 1; c <= 6; c++) {
+    const poolLabel = c <= 3 ? 'Pool A' : (c <= 6 ? 'Pool B' : '');
+    const panel = document.createElement('div');
+    panel.className = 'court-panel';
+    const courtMatches = STATE.matches.filter(m => m.court === c)
+      .sort((a,b) => {
+        // pool rounds first in order, then QF, SF, 3P, F
+        const order = { 'QF':100, 'SF':101, '3P':102, 'F':103 };
+        const ao = a.phase==='pool' ? a.round : order[a.round];
+        const bo = b.phase==='pool' ? b.round : order[b.round];
+        return ao - bo;
+      });
+    const rows = courtMatches.map(m => {
+      const home = teamById(m.homeId), away = teamById(m.awayId);
+      const done = m.homeScore!=null && m.awayScore!=null;
+      const roundLabel = m.phase === 'pool' ? `R${m.round}` : m.round;
+      const homeLabel = home ? home.name : (m.phase==='playoff' ? 'TBD' : '—');
+      const awayLabel = away ? away.name : (m.phase==='playoff' ? 'TBD' : '—');
+      const scoreHtml = done
+        ? `<span>${m.homeScore}-${m.awayScore}</span>`
+        : `<span class="pending">— / —</span>`;
+      return `<li class="${done?'done':''} ${m.phase==='playoff'?'playoff':''}">
+        <span class="round-tag">${roundLabel}</span>
+        <span>${homeLabel} <span style="opacity:0.5;">vs</span> ${awayLabel}</span>
+        <span class="score-tag">${scoreHtml}</span>
+      </li>`;
+    }).join('');
+    panel.innerHTML = `
+      <div class="court-head">
+        <strong>Court ${c}</strong>
+        <span class="pool-label">${poolLabel}${c<=2?' · Playoffs':''}${c===1?' · Final':''}</span>
+      </div>
+      <ul>${rows || '<li style="grid-template-columns:1fr;">No matches assigned.</li>'}</ul>`;
+    grid.appendChild(panel);
+  }
+}
+
+function renderAll() {
+  renderStandings();
+  renderPoolMatches();
+  renderCourts();
+  renderBracket();
+  renderAdmin();
+  updateSourceInfo();
+}
+renderAll();
+</script>
+</body>
+</html>

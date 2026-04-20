@@ -3,465 +3,540 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pickle Yard Moneyball Throwdown — May 16 | Registration</title>
+<title>Pickle Yard Moneyball Throwdown — May 16 | Register</title>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --green:   #009F67;
+  --teal:    #004A5E;
+  --deep:    #005763;
+  --ink:     #0D1520;
+  --ink2:    #141827;
+  --white:   #FFFFFF;
+  --gold:    #F3BF45;
+  --gold2:   #FFD76A;
+  --orange:  #FF7A2F;
+  --red:     #E03535;
+  --silver:  #C0C0C0;
+  --bronze:  #CD7F32;
+  --grad-hero: linear-gradient(135deg, #0D1520 0%, #004A5E 50%, #005763 75%, #009F67 100%);
+  --grad-btn:  linear-gradient(135deg, #009F67 0%, #00B877 100%);
+  --grad-gold: linear-gradient(135deg, #F3BF45 0%, #FFD76A 50%, #F3BF45 100%);
+  --grad-card: linear-gradient(145deg, rgba(0,74,94,0.6) 0%, rgba(0,87,99,0.4) 100%);
+  --glow-green: 0 0 30px rgba(0,159,103,0.4);
+  --glow-gold:  0 0 30px rgba(243,191,69,0.5);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Work Sans', sans-serif;
+  background: var(--ink);
+  color: var(--white);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
 
-  :root {
-    /* Pickle Yard brand palette — lifted from thepickleyard.com SVG logo */
-    --py-green:       #009F67;   /* monogram P */
-    --py-teal:        #004A5E;   /* monogram Y */
-    --py-teal-deep:   #005763;   /* site chrome */
-    --py-teal-alt:    #00576E;
-    --py-ink:         #141827;   /* near-black navy */
-    --py-cream:       #F5F1E6;
-    --py-white:       #FFFFFF;
-    --py-accent:      #F3BF45;   /* warm yellow accent from site */
-    --py-orange:      #DD9933;
-    --py-danger:      #DD3333;
+/* ===================== TICKER ===================== */
+.ticker-wrap {
+  background: var(--gold);
+  color: var(--ink);
+  overflow: hidden;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  border-bottom: 2px solid var(--gold2);
+  box-shadow: 0 2px 12px rgba(243,191,69,0.5);
+}
+.ticker-track {
+  display: flex;
+  animation: ticker 28s linear infinite;
+  white-space: nowrap;
+}
+.ticker-item {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.ticker-divider { opacity: 0.4; margin: 0 0.5rem; }
+.ticker-money { color: var(--teal); font-size: 1rem; }
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ticker-wrap:hover .ticker-track { animation-play-state: paused; }
 
-    --grad-hero:  linear-gradient(135deg, var(--py-teal) 0%, var(--py-teal-deep) 45%, var(--py-green) 100%);
-    --grad-btn:   linear-gradient(135deg, var(--py-green) 0%, #00B877 100%);
-    --grad-money: linear-gradient(135deg, var(--py-accent) 0%, #FFD976 100%);
-  }
+/* ===================== HEADER ===================== */
+header {
+  background: var(--grad-hero);
+  padding: 3rem 0 2.5rem;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 4px solid var(--gold);
+}
+header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(243,191,69,0.15) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(0,159,103,0.25) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(0,87,99,0.3) 0%, transparent 60%);
+  pointer-events: none;
+}
+/* Floating pickleball circles */
+.ball {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #FFEB3B 0%, #E6A817 100%);
+  opacity: 0.12;
+  pointer-events: none;
+}
+.ball::after {
+  content: '';
+  position: absolute; inset: 15%;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgba(0,0,0,0.15) 0deg 10deg, transparent 10deg 20deg);
+}
+.ball-1 { width:120px; height:120px; top:5%; left:3%; animation: floatA 9s ease-in-out infinite; }
+.ball-2 { width:80px;  height:80px;  top:60%; right:4%; animation: floatB 11s ease-in-out infinite; opacity:0.08; }
+.ball-3 { width:60px;  height:60px;  top:20%; right:18%; animation: floatC 14s ease-in-out infinite; opacity:0.07; }
+.ball-4 { width:100px; height:100px; bottom:5%; left:25%; animation: floatA 12s ease-in-out infinite reverse; opacity:0.06; }
+@keyframes floatA { 0%,100%{transform:translate(0,0) rotate(0deg)} 33%{transform:translate(15px,-25px) rotate(120deg)} 66%{transform:translate(-10px,-10px) rotate(240deg)} }
+@keyframes floatB { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-20px,15px) rotate(180deg)} }
+@keyframes floatC { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(10px,-20px) scale(1.15)} }
 
-  body {
-    font-family:'Work Sans', sans-serif;
-    background: var(--py-ink);
-    color: var(--py-white);
-    line-height:1.6;
-    overflow-x:hidden;
-  }
+.header-inner {
+  max-width: 1280px; margin: 0 auto; padding: 0 2rem;
+  text-align: center; position: relative; z-index: 2;
+}
+.brand-row {
+  display: flex; align-items: center; justify-content: center; gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.py-mark {
+  width: 60px; height: 60px;
+  background: var(--white); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  padding: 8px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4), var(--glow-green);
+}
+.py-mark svg { width:100%; height:100%; display:block; }
+.brand-text { text-align: left; }
+.brand-name { font-family:'Archivo Black',sans-serif; font-size:1.3rem; letter-spacing:2px; text-transform:uppercase; }
+.brand-tag  { font-size:0.75rem; letter-spacing:3px; color:var(--gold); text-transform:uppercase; font-weight:700; }
 
-  /* Faint court-line background pattern */
-  .bg-pattern {
-    position:fixed; inset:0; z-index:-1; opacity:0.04;
-    background-image:
-      repeating-linear-gradient(90deg, transparent 0 80px, var(--py-green) 80px 81px),
-      repeating-linear-gradient(0deg,  transparent 0 80px, var(--py-teal)  80px 81px);
-  }
+.event-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(2.2rem, 6vw, 4.2rem);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+}
+.event-title .word-money {
+  display: block;
+  background: var(--grad-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(243,191,69,0.6));
+  animation: pulse-gold 3s ease-in-out infinite;
+}
+@keyframes pulse-gold {
+  0%,100% { filter: drop-shadow(0 0 15px rgba(243,191,69,0.5)); }
+  50%      { filter: drop-shadow(0 0 35px rgba(243,191,69,0.9)); }
+}
+.event-subtitle {
+  font-size: 1.1rem; font-weight: 300; letter-spacing: 4px;
+  color: rgba(255,255,255,0.85); text-transform: uppercase; margin-bottom: 1.5rem;
+}
 
-  /* ====== HEADER ====== */
-  header {
-    background: var(--grad-hero);
-    padding: 3rem 0 2.5rem;
-    position:relative;
-    border-bottom: 5px solid var(--py-accent);
-    overflow:hidden;
-  }
-  header::before {
-    content:''; position:absolute; inset:0;
-    background:
-      radial-gradient(circle at 15% 20%, rgba(243,191,69,0.18) 0%, transparent 45%),
-      radial-gradient(circle at 85% 80%, rgba(0,159,103,0.20) 0%, transparent 45%);
-    pointer-events:none;
-  }
+/* Prize hero row in header */
+.header-prizes {
+  display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.75rem;
+}
+.prize-chip {
+  background: rgba(0,0,0,0.35);
+  border: 2px solid;
+  border-radius: 12px;
+  padding: 0.7rem 1.2rem;
+  min-width: 110px;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  transition: transform 0.2s;
+}
+.prize-chip:hover { transform: translateY(-3px); }
+.prize-chip.g1 { border-color: #FFD700; box-shadow: 0 4px 16px rgba(255,215,0,0.35); }
+.prize-chip.g2 { border-color: var(--silver); box-shadow: 0 4px 16px rgba(192,192,192,0.25); }
+.prize-chip.g3 { border-color: var(--bronze); box-shadow: 0 4px 16px rgba(205,127,50,0.25); }
+.prize-chip .place { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; }
+.prize-chip .amount { font-family:'Archivo Black',sans-serif; font-size: 1.6rem; color: var(--gold); }
+.prize-chip.g1 .amount { color: #FFD700; }
+.prize-chip.g2 .amount { color: var(--silver); }
+.prize-chip.g3 .amount { color: var(--bronze); }
 
-  .header-inner {
-    max-width:1200px; margin:0 auto; padding:0 2rem;
-    text-align:center; position:relative; z-index:2;
-  }
+.event-meta {
+  display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap;
+}
+.meta-chip {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(243,191,69,0.3);
+  backdrop-filter: blur(6px);
+  padding: 0.5rem 1rem; border-radius: 999px;
+  font-weight: 600; font-size: 0.9rem;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.meta-chip svg { width:16px; height:16px; color: var(--gold); flex-shrink:0; }
 
-  .brand-row {
-    display:flex; align-items:center; justify-content:center; gap:1rem;
-    margin-bottom: 1.5rem;
-  }
-  .py-monogram {
-    width:64px; height:64px;
-    background: var(--py-white);
-    border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
-    padding: 8px;
-  }
-  .py-monogram svg { width:100%; height:100%; display:block; }
-  .brand-text { text-align:left; }
-  .brand-name {
-    font-family:'Archivo Black', sans-serif;
-    font-size: 1.4rem; letter-spacing: 2px; color: var(--py-white);
-    text-transform: uppercase;
-  }
-  .brand-tag {
-    font-size: 0.8rem; letter-spacing: 3px; color: var(--py-accent);
-    text-transform: uppercase; font-weight: 600;
-  }
+/* ===================== NAV ===================== */
+nav.tabs {
+  background: var(--ink2);
+  border-bottom: 3px solid var(--green);
+  position: sticky; top: 40px; z-index: 100;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.5);
+}
+.tabs-inner {
+  max-width: 1280px; margin: 0 auto;
+  display: flex; overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs-inner::-webkit-scrollbar { display: none; }
+nav.tabs button {
+  flex-shrink: 0; padding: 1rem 1.4rem;
+  background: transparent; border: none; color: rgba(255,255,255,0.75);
+  font-family: 'Work Sans', sans-serif; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem;
+  border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.2s;
+  white-space: nowrap;
+}
+nav.tabs button:hover { color: var(--gold); }
+nav.tabs button.active { color: var(--gold); border-bottom-color: var(--gold); background: rgba(243,191,69,0.08); }
 
-  h1 {
-    font-family:'Archivo Black', sans-serif;
-    font-size: clamp(2rem, 5vw, 3.6rem);
-    text-transform:uppercase;
-    letter-spacing: 3px;
-    color: var(--py-white);
-    text-shadow: 0 0 24px rgba(243,191,69,0.4), 3px 3px 6px rgba(0,0,0,0.6);
-    margin-bottom: 0.5rem;
-  }
-  .highlight {
-    color: var(--py-accent);
-    display:inline-block;
-  }
-  .subtitle {
-    font-size: 1.2rem; font-weight:300; letter-spacing: 3px;
-    color: var(--py-white); text-transform:uppercase;
-    margin-bottom: 1.75rem;
-  }
+/* ===================== LAYOUT ===================== */
+.page-body { max-width: 1280px; margin: 0 auto; padding: 2rem; }
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2rem;
+  align-items: start;
+}
 
-  .event-meta {
-    display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;
-    margin-top:1.5rem;
-  }
-  .meta-chip {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(243,191,69,0.35);
-    backdrop-filter: blur(6px);
-    padding: 0.6rem 1.1rem; border-radius: 999px;
-    font-weight:600; display:flex; align-items:center; gap:0.5rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  }
-  .meta-chip svg { width:18px; height:18px; color: var(--py-accent); }
+/* ===================== PANELS ===================== */
+section.panel { display: none; animation: fadeUp 0.35s ease; }
+section.panel.active { display: block; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 
-  /* ====== NAV ====== */
-  nav.nav-tabs {
-    background: var(--py-ink);
-    border-bottom: 3px solid var(--py-green);
-    position:sticky; top:0; z-index:100;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.5);
-  }
-  .nav-inner {
-    max-width:1200px; margin:0 auto;
-    display:flex; justify-content:center; overflow-x:auto;
-  }
-  nav.nav-tabs button {
-    flex:1; min-width:140px; padding: 1.25rem 1.5rem;
-    background:transparent; border:none;
-    color: var(--py-white);
-    font-family:'Work Sans', sans-serif; font-weight:600;
-    text-transform:uppercase; letter-spacing: 1px;
-    border-bottom: 3px solid transparent;
-    cursor:pointer; transition: all 0.25s ease;
-  }
-  nav.nav-tabs button:hover { color: var(--py-accent); background: rgba(243,191,69,0.08); }
-  nav.nav-tabs button.active {
-    color: var(--py-accent);
-    border-bottom-color: var(--py-accent);
-    background: rgba(243,191,69,0.12);
-  }
+h2 {
+  font-family: 'Archivo Black', sans-serif; text-transform: uppercase;
+  letter-spacing: 2px; font-size: 1.7rem; margin-bottom: 1.5rem;
+  padding-bottom: 0.7rem; border-bottom: 3px solid var(--green);
+}
+h3 { font-family:'Archivo Black',sans-serif; text-transform:uppercase; letter-spacing:1.5px; color:var(--gold); margin-bottom:0.85rem; font-size:1.1rem; }
 
-  /* ====== MAIN ====== */
-  main { max-width:1200px; margin:0 auto; padding: 3rem 2rem; }
-  section.panel { display:none; animation: fadeIn 0.4s ease; }
-  section.panel.active { display:block; }
-  @keyframes fadeIn { from { opacity:0; transform:translateY(10px);} to { opacity:1; transform:translateY(0);} }
+.card {
+  background: var(--grad-card);
+  border: 1px solid rgba(0,159,103,0.25);
+  border-radius: 14px; padding: 1.5rem; margin-bottom: 1.25rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+}
+.grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.25rem; }
 
-  h2 {
-    font-family:'Archivo Black', sans-serif;
-    font-size: 2rem; text-transform:uppercase;
-    letter-spacing: 2px;
-    color: var(--py-white);
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 3px solid var(--py-green);
-  }
-  h3 {
-    font-family:'Archivo Black', sans-serif;
-    font-size: 1.25rem; text-transform:uppercase;
-    color: var(--py-accent);
-    letter-spacing: 1.5px;
-    margin-bottom: 1rem;
-  }
+/* ===================== FORMAT STEPS ===================== */
+.step {
+  display: flex; gap: 1rem; align-items: flex-start;
+  padding: 1.1rem; background: rgba(0,74,94,0.3);
+  border-left: 4px solid var(--green); border-radius: 8px; margin-bottom: 0.85rem;
+}
+.step-num {
+  flex-shrink: 0; width: 40px; height: 40px;
+  background: var(--grad-btn); color: var(--white);
+  font-family:'Archivo Black',sans-serif; border-radius: 50%;
+  display: flex; align-items:center; justify-content:center; font-size:1.1rem;
+}
+.step h4 { color: var(--gold); font-size:1rem; margin-bottom:0.25rem; }
+.step p  { color: rgba(255,255,255,0.85); font-size:0.9rem; }
 
-  /* ====== CARDS ====== */
-  .card {
-    background: rgba(0, 74, 94, 0.35);
-    border: 1px solid rgba(0,159,103,0.25);
-    border-radius: 12px;
-    padding: 1.75rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.25);
-  }
+/* ===================== SCHEDULE TABLE ===================== */
+table.schedule { width:100%; border-collapse:collapse; border-radius:10px; overflow:hidden; }
+table.schedule th { background:var(--teal); padding:0.8rem; text-align:left; font-size:0.78rem; text-transform:uppercase; letter-spacing:1px; color:var(--gold); }
+table.schedule td { padding:0.8rem; border-top:1px solid rgba(0,159,103,0.12); font-size:0.9rem; }
+table.schedule tr:hover td { background:rgba(0,159,103,0.07); }
+table.schedule td:last-child { font-family:'Archivo Black',sans-serif; font-size:0.78rem; color:var(--gold); letter-spacing:1px; }
 
-  .grid-3 { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:1.25rem; }
-  .grid-2 { display:grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap:1.25rem; }
+/* ===================== PRIZE SECTION ===================== */
+.prize-hero {
+  background: linear-gradient(135deg, #1A1200 0%, #2A1E00 40%, #3D2D00 100%);
+  border: 2px solid var(--gold);
+  border-radius: 18px; padding: 2.5rem 2rem; text-align:center;
+  box-shadow: var(--glow-gold);
+  margin-bottom: 1.5rem; position:relative; overflow:hidden;
+}
+.prize-hero::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(circle at 50% 0%, rgba(243,191,69,0.15) 0%, transparent 60%);
+  pointer-events:none;
+}
+.prize-total { font-family:'Archivo Black',sans-serif; font-size:5rem; line-height:1; color:var(--gold); filter:drop-shadow(0 0 20px rgba(243,191,69,0.6)); }
+.prize-label { font-size:0.8rem; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.7); margin-bottom:0.5rem; }
+.prize-slots { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-top:1.75rem; position:relative; z-index:1; }
+.prize-slot { background:rgba(0,0,0,0.5); border-radius:12px; padding:1.25rem 0.5rem; }
+.prize-slot.s1 { border-top: 4px solid #FFD700; }
+.prize-slot.s2 { border-top: 4px solid var(--silver); }
+.prize-slot.s3 { border-top: 4px solid var(--bronze); }
+.prize-slot .rank { font-family:'Archivo Black',sans-serif; font-size:1rem; letter-spacing:2px; }
+.prize-slot .cash { font-family:'Archivo Black',sans-serif; font-size:2rem; }
+.prize-slot.s1 .cash { color:#FFD700; }
+.prize-slot.s2 .cash { color:var(--silver); }
+.prize-slot.s3 .cash { color:var(--bronze); }
 
-  /* ====== PRIZE POOL HERO ====== */
-  .prize-hero {
-    background: var(--grad-money);
-    color: var(--py-ink);
-    border-radius: 18px;
-    padding: 2.5rem 2rem;
-    text-align:center;
-    margin-bottom: 2rem;
-    box-shadow: 0 10px 30px rgba(243,191,69,0.35);
-    position:relative; overflow:hidden;
-  }
-  .prize-hero::after {
-    content:'$'; position:absolute;
-    font-family:'Archivo Black', sans-serif;
-    font-size: 22rem; top:-4rem; right:-2rem;
-    opacity:0.08; color: var(--py-teal);
-  }
-  .prize-hero .label { font-weight:800; letter-spacing:4px; text-transform:uppercase; font-size:0.95rem; }
-  .prize-hero .total {
-    font-family:'Archivo Black', sans-serif;
-    font-size: 4.5rem; line-height:1;
-    color: var(--py-teal);
-    margin: 0.5rem 0;
-  }
-  .prize-breakdown {
-    display:grid; grid-template-columns: repeat(3, 1fr);
-    gap: 1rem; margin-top: 1.5rem;
-    position:relative; z-index:2;
-  }
-  .prize-slot {
-    background: rgba(20,24,39,0.9);
-    color: var(--py-white);
-    padding: 1.25rem 0.5rem;
-    border-radius: 10px;
-    border-top: 4px solid var(--py-green);
-  }
-  .prize-slot.gold { border-top-color: #FFD700; }
-  .prize-slot.silver { border-top-color: #C0C0C0; }
-  .prize-slot.bronze { border-top-color: #CD7F32; }
-  .prize-place { font-family:'Archivo Black', sans-serif; font-size:1.1rem; letter-spacing:2px; }
-  .prize-amount { font-family:'Archivo Black', sans-serif; font-size:2rem; color: var(--py-accent); }
+/* ===================== TEAMS ===================== */
+.team-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:0.85rem; }
+.team-card {
+  display:flex; align-items:center; gap:0.85rem;
+  background:rgba(0,74,94,0.4); border:1px solid rgba(0,159,103,0.2);
+  border-radius:10px; padding:0.9rem 1rem;
+  transition:transform 0.2s, box-shadow 0.2s;
+}
+.team-card:hover { transform:translateY(-2px); box-shadow: var(--glow-green); }
+.team-num { width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Archivo Black',sans-serif; font-size:0.85rem; flex-shrink:0; }
+.pool-A .team-num { background:var(--green); }
+.pool-B .team-num { background:var(--teal); }
+.team-name { font-weight:700; font-size:0.95rem; }
+.team-players { font-size:0.78rem; color:rgba(255,255,255,0.65); }
 
-  /* ====== FORMAT EXPLAINER ====== */
-  .format-step {
-    display:flex; gap:1.25rem; align-items:flex-start;
-    padding: 1.25rem;
-    background: rgba(0,74,94,0.25);
-    border-left: 4px solid var(--py-green);
-    border-radius: 8px;
-    margin-bottom: 1rem;
-  }
-  .step-num {
-    flex-shrink:0;
-    width:44px; height:44px;
-    background: var(--grad-btn);
-    color: var(--py-white);
-    font-family:'Archivo Black', sans-serif;
-    display:flex; align-items:center; justify-content:center;
-    border-radius: 50%;
-    font-size: 1.2rem;
-  }
-  .step-body h4 { color: var(--py-accent); font-size: 1.05rem; margin-bottom: 0.3rem; }
-  .step-body p { color: rgba(255,255,255,0.85); font-size: 0.95rem; }
+/* ===================== REGISTRATION FORM ===================== */
+.reg-form {
+  background: linear-gradient(145deg, rgba(0,74,94,0.5), rgba(0,87,99,0.3));
+  border: 2px solid var(--green);
+  border-radius: 18px; padding: 2rem;
+  box-shadow: var(--glow-green);
+}
+.reg-form h2 { border-color: var(--gold); }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+.form-grid.single { grid-template-columns:1fr; }
+.form-group label {
+  display:block; font-size:0.72rem; font-weight:800;
+  text-transform:uppercase; letter-spacing:1.5px;
+  color:var(--gold); margin-bottom:0.4rem;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width:100%; padding:0.85rem 1rem;
+  background:rgba(10,18,30,0.7);
+  border:1.5px solid rgba(0,159,103,0.4);
+  border-radius:10px; color:var(--white);
+  font-family:inherit; font-size:1rem;
+  transition:all 0.2s; -webkit-appearance:none;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline:none; border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(243,191,69,0.15);
+  background:rgba(10,18,30,0.9);
+}
+.form-group input::placeholder { color:rgba(255,255,255,0.3); }
+.form-divider {
+  display:flex; align-items:center; gap:1rem; margin:1.5rem 0;
+}
+.form-divider span { font-family:'Archivo Black',sans-serif; font-size:0.8rem; letter-spacing:2px; color:var(--gold); text-transform:uppercase; flex-shrink:0; }
+.form-divider::before,.form-divider::after { content:''; flex:1; height:1px; background:rgba(0,159,103,0.3); }
+.submit-btn {
+  width:100%; padding:1.1rem;
+  background:var(--grad-btn); color:var(--white);
+  font-family:'Archivo Black',sans-serif; font-size:1.1rem;
+  text-transform:uppercase; letter-spacing:2px;
+  border:none; border-radius:12px; cursor:pointer;
+  box-shadow:0 6px 20px rgba(0,159,103,0.45);
+  transition:all 0.25s; margin-top:1.5rem;
+}
+.submit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,159,103,0.6); }
+.submit-btn:active { transform:translateY(0); }
+.reg-footer { text-align:center; margin-top:0.85rem; font-size:0.82rem; color:rgba(255,255,255,0.5); }
+.cap-bar {
+  background:rgba(0,0,0,0.3); border-radius:999px; height:8px; margin-bottom:0.4rem; overflow:hidden;
+}
+.cap-fill { background:var(--grad-btn); height:100%; border-radius:999px; transition:width 0.5s ease; }
+.cap-label { font-size:0.78rem; color:rgba(255,255,255,0.6); text-align:center; }
 
-  /* ====== SCHEDULE TABLE ====== */
-  table.schedule {
-    width:100%; border-collapse: collapse;
-    background: rgba(20,24,39,0.6);
-    border-radius: 10px; overflow:hidden;
-  }
-  table.schedule th {
-    background: var(--py-teal);
-    color: var(--py-white);
-    padding: 0.9rem;
-    text-align:left; font-weight:700;
-    text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem;
-  }
-  table.schedule td {
-    padding: 0.85rem 0.9rem;
-    border-top: 1px solid rgba(0,159,103,0.15);
-  }
-  table.schedule tr:hover td { background: rgba(0,159,103,0.08); }
+/* ===================== SIDEBAR ===================== */
+.sidebar { display:flex; flex-direction:column; gap:1.25rem; }
+.sidebar-sticky { position: sticky; top: 100px; display:flex; flex-direction:column; gap:1.25rem; }
 
-  /* ====== REGISTRATION FORM ====== */
-  form.register {
-    background: rgba(0, 74, 94, 0.45);
-    border: 2px solid var(--py-green);
-    border-radius: 14px;
-    padding: 2rem;
-    max-width: 720px;
-    margin: 0 auto;
-  }
-  .form-row { display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-bottom: 1rem; }
-  .form-row.single { grid-template-columns: 1fr; }
-  label {
-    display:block;
-    font-size: 0.8rem; font-weight:700; text-transform: uppercase; letter-spacing: 1px;
-    color: var(--py-accent);
-    margin-bottom: 0.35rem;
-  }
-  input, select, textarea {
-    width:100%;
-    padding: 0.75rem 0.9rem;
-    background: rgba(20,24,39,0.7);
-    border: 1.5px solid rgba(0,159,103,0.4);
-    border-radius: 8px;
-    color: var(--py-white);
-    font-family: inherit; font-size: 1rem;
-    transition: all 0.2s ease;
-  }
-  input:focus, select:focus, textarea:focus {
-    outline:none;
-    border-color: var(--py-accent);
-    box-shadow: 0 0 0 3px rgba(243,191,69,0.15);
-  }
+.sb-card {
+  border-radius:14px; overflow:hidden;
+  box-shadow:0 6px 24px rgba(0,0,0,0.35);
+}
 
-  .btn {
-    display:inline-block;
-    padding: 1rem 2rem;
-    background: var(--grad-btn);
-    color: var(--py-white);
-    font-family:'Archivo Black', sans-serif;
-    text-transform: uppercase; letter-spacing: 2px;
-    border:none; border-radius: 10px;
-    font-size: 1rem;
-    cursor:pointer;
-    box-shadow: 0 6px 18px rgba(0,159,103,0.35);
-    transition: all 0.25s ease;
-    text-decoration:none;
-  }
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,159,103,0.5); }
-  .btn-accent { background: var(--grad-money); color: var(--py-teal); }
-  .btn-accent:hover { box-shadow: 0 10px 24px rgba(243,191,69,0.5); }
-  .btn-outline {
-    background: transparent;
-    border: 2px solid var(--py-green);
-    color: var(--py-green);
-    box-shadow: none;
-  }
-  .btn-outline:hover { background: var(--py-green); color: var(--py-white); }
+/* Register CTA card */
+.sb-register {
+  background: linear-gradient(145deg, var(--green), #006040);
+  padding: 1.5rem; text-align:center;
+  border: 2px solid rgba(255,255,255,0.15);
+}
+.sb-register .cap-slots { font-family:'Archivo Black',sans-serif; font-size:2rem; color:var(--gold); }
+.sb-register .cap-txt  { font-size:0.78rem; letter-spacing:2px; text-transform:uppercase; opacity:0.85; margin-bottom:1rem; }
+.sb-register .reg-btn {
+  display:block; width:100%; padding:0.9rem;
+  background:var(--gold); color:var(--ink);
+  font-family:'Archivo Black',sans-serif; font-size:1rem;
+  text-transform:uppercase; letter-spacing:2px;
+  border:none; border-radius:10px; cursor:pointer;
+  box-shadow:var(--glow-gold); transition:all 0.2s;
+  text-decoration:none;
+}
+.sb-register .reg-btn:hover { background:var(--gold2); transform:scale(1.02); }
 
-  .text-center { text-align:center; }
+/* Prize mini card */
+.sb-prize {
+  background: linear-gradient(145deg, #1A1200, #2A2000);
+  border: 1px solid var(--gold); padding: 1.25rem;
+}
+.sb-prize-row { display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0; border-bottom:1px solid rgba(243,191,69,0.15); }
+.sb-prize-row:last-child { border-bottom:none; }
+.sb-prize-row .label { font-size:0.85rem; }
+.sb-prize-row .cash  { font-family:'Archivo Black',sans-serif; font-size:1.1rem; }
 
-  /* ====== TEAMS GRID ====== */
-  .team-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1rem; }
-  .team-card {
-    background: rgba(0,74,94,0.4);
-    border: 1px solid rgba(0,159,103,0.25);
-    border-radius: 10px;
-    padding: 1rem 1.25rem;
-    display:flex; align-items:center; gap: 0.85rem;
-  }
-  .team-num {
-    width:40px; height:40px;
-    background: var(--py-green);
-    color: var(--py-white);
-    font-family:'Archivo Black', sans-serif;
-    display:flex; align-items:center; justify-content:center;
-    border-radius: 50%;
-    font-size: 0.9rem;
-  }
-  .team-pool-A .team-num { background: var(--py-green); }
-  .team-pool-B .team-num { background: var(--py-teal); }
-  .team-name { font-weight:700; }
-  .team-players { font-size: 0.85rem; color: rgba(255,255,255,0.7); }
+/* Pickleball ad card */
+.sb-ad {
+  background: var(--grad-hero);
+  border: 1px solid rgba(0,159,103,0.3);
+  padding: 1.25rem; text-align:center; position:relative; overflow:hidden;
+}
+.sb-ad::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(circle at 50% 50%, rgba(0,159,103,0.2) 0%, transparent 70%);
+}
+.pb-court { position:relative; z-index:1; }
+.court-svg { width:100%; max-width:220px; height:auto; display:block; margin:0 auto 1rem; }
+.sb-ad h4 { font-family:'Archivo Black',sans-serif; font-size:1rem; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:0.4rem; position:relative; }
+.sb-ad p  { font-size:0.8rem; color:rgba(255,255,255,0.75); position:relative; }
 
-  /* ====== ADMIN DASHBOARD ====== */
-  .admin-stats {
-    display:grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
-    gap: 0.85rem; margin-bottom: 1.5rem;
-  }
-  .stat-box {
-    background: rgba(0,74,94,0.4);
-    border: 1px solid rgba(0,159,103,0.3);
-    border-radius: 10px;
-    padding: 1.1rem 0.75rem;
-    text-align:center;
-  }
-  .stat-box .stat-val {
-    font-family:'Archivo Black', sans-serif;
-    font-size: 2rem; color: var(--py-accent);
-    line-height: 1;
-  }
-  .stat-box .stat-label {
-    font-size: 0.75rem; text-transform:uppercase;
-    letter-spacing: 1.5px; color: rgba(255,255,255,0.75);
-    margin-top: 0.35rem;
-  }
+/* Stats mini card */
+.sb-stats { background: rgba(0,74,94,0.6); border:1px solid rgba(0,159,103,0.3); padding:1.25rem; }
+.stat-row { display:flex; justify-content:space-between; align-items:center; padding:0.45rem 0; border-bottom:1px solid rgba(0,159,103,0.12); }
+.stat-row:last-child { border-bottom:none; }
+.stat-row .sk { font-size:0.82rem; color:rgba(255,255,255,0.75); }
+.stat-row .sv { font-family:'Archivo Black',sans-serif; font-size:1rem; color:var(--gold); }
 
-  .admin-toolbar {
-    display:flex; gap: 0.6rem; flex-wrap:wrap;
-    padding: 1rem; background: rgba(0,74,94,0.25);
-    border-radius: 10px; margin-bottom: 1.25rem;
-    align-items:center;
-  }
+/* Countdown card */
+.sb-countdown { background:rgba(0,20,30,0.8); border:1px solid rgba(0,159,103,0.3); padding:1.25rem; text-align:center; }
+.sb-countdown .cdown-label { font-size:0.7rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.6); margin-bottom:0.75rem; }
+.cdown-boxes { display:flex; justify-content:center; gap:0.5rem; }
+.cdown-box { background:rgba(0,74,94,0.6); border:1px solid rgba(0,159,103,0.3); border-radius:8px; padding:0.5rem 0.75rem; min-width:52px; }
+.cdown-box .n { font-family:'Archivo Black',sans-serif; font-size:1.5rem; color:var(--gold); line-height:1; }
+.cdown-box .u { font-size:0.62rem; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.5); }
 
-  .admin-table {
-    width: 100%; border-collapse: collapse;
-    background: rgba(0,74,94,0.3);
-    border-radius: 10px; overflow:hidden;
-    font-size: 0.85rem;
-    min-width: 1100px;
-  }
-  .admin-table th {
-    background: var(--py-teal);
-    color: var(--py-white);
-    padding: 0.7rem 0.6rem;
-    text-align:left; font-size: 0.72rem;
-    text-transform: uppercase; letter-spacing:1px;
-    white-space: nowrap;
-  }
-  .admin-table td {
-    padding: 0.65rem 0.6rem;
-    border-top: 1px solid rgba(0,159,103,0.15);
-    vertical-align: top;
-  }
-  .admin-table tr:hover td { background: rgba(0,159,103,0.06); }
-  .admin-table select {
-    padding: 0.3rem 0.4rem; font-size: 0.8rem;
-    background: rgba(20,24,39,0.7);
-    border: 1px solid rgba(0,159,103,0.4);
-    border-radius: 4px; color: var(--py-white);
-  }
-  .paid-pill {
-    display:inline-block;
-    padding: 0.2rem 0.6rem;
-    border-radius: 999px;
-    font-size: 0.7rem; font-weight:700;
-    letter-spacing: 1px; text-transform: uppercase;
-    cursor: pointer;
-    user-select:none;
-  }
-  .paid-pill.yes { background: var(--py-green); color: var(--py-white); }
-  .paid-pill.no  { background: rgba(221,51,51,0.8); color: var(--py-white); }
+/* ===================== ADMIN STYLES ===================== */
+.admin-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:0.85rem; margin-bottom:1.5rem; }
+.stat-box { background:rgba(0,74,94,0.4); border:1px solid rgba(0,159,103,0.3); border-radius:10px; padding:1rem 0.75rem; text-align:center; }
+.stat-box .sv2 { font-family:'Archivo Black',sans-serif; font-size:2rem; color:var(--gold); line-height:1; }
+.stat-box .sk2 { font-size:0.72rem; text-transform:uppercase; letter-spacing:1.5px; color:rgba(255,255,255,0.7); margin-top:0.3rem; }
+.admin-bar { display:flex; gap:0.6rem; flex-wrap:wrap; padding:1rem; background:rgba(0,74,94,0.25); border-radius:10px; margin-bottom:1.25rem; align-items:center; }
+.btn { padding:0.6rem 1.1rem; background:var(--grad-btn); color:var(--white); border:none; border-radius:8px; font-family:'Archivo Black',sans-serif; text-transform:uppercase; letter-spacing:1px; font-size:0.8rem; cursor:pointer; transition:all 0.2s; }
+.btn:hover { opacity:0.85; }
+.btn.ghost { background:transparent; border:1.5px solid var(--green); color:var(--green); }
+.btn.danger { background:linear-gradient(135deg,#E03535,#AA2222); }
+.admin-table { width:100%; border-collapse:collapse; font-size:0.83rem; min-width:1000px; }
+.admin-table th { background:var(--teal); color:var(--white); padding:0.65rem 0.6rem; text-align:left; font-size:0.7rem; text-transform:uppercase; letter-spacing:1px; }
+.admin-table td { padding:0.6rem; border-top:1px solid rgba(0,159,103,0.12); vertical-align:top; }
+.admin-table tr:hover td { background:rgba(0,159,103,0.05); }
+.admin-table select { padding:0.25rem 0.4rem; background:rgba(10,18,30,0.8); border:1px solid rgba(0,159,103,0.4); border-radius:4px; color:var(--white); font-size:0.8rem; }
+.paid-pill { display:inline-block; padding:0.18rem 0.55rem; border-radius:999px; font-size:0.68rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; cursor:pointer; }
+.paid-pill.yes { background:var(--green); color:var(--white); }
+.paid-pill.no  { background:#E03535; color:var(--white); }
+.mini-btn { padding:0.25rem 0.55rem; font-size:0.68rem; border:1px solid rgba(0,159,103,0.5); background:transparent; color:var(--white); border-radius:4px; cursor:pointer; text-transform:uppercase; font-weight:700; letter-spacing:1px; }
+.mini-btn:hover { background:rgba(0,159,103,0.2); }
+.mini-btn.danger { border-color:rgba(224,53,53,0.5); }
+.mini-btn.danger:hover { background:rgba(224,53,53,0.2); color:#FF8080; }
+#admin-login-wrap .card { max-width:460px; margin:0 auto; text-align:center; }
 
-  .mini-btn {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.7rem;
-    border: 1px solid rgba(0,159,103,0.5);
-    background: transparent;
-    color: var(--py-white);
-    border-radius: 4px;
-    cursor: pointer;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    font-weight: 600;
-  }
-  .mini-btn:hover { background: rgba(0,159,103,0.2); border-color: var(--py-accent); color: var(--py-accent); }
-  .mini-btn.danger { border-color: rgba(221,51,51,0.5); }
-  .mini-btn.danger:hover { background: rgba(221,51,51,0.2); border-color: #FF6B6B; color:#FF6B6B; }
+/* ===================== FAQ ===================== */
+.faq-item { background:rgba(0,74,94,0.3); border:1px solid rgba(0,159,103,0.2); border-radius:10px; margin-bottom:0.85rem; overflow:hidden; }
+.faq-q { padding:1rem 1.25rem; font-weight:700; cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:0.5rem; }
+.faq-q::after { content:'▼'; font-size:0.7rem; color:var(--gold); flex-shrink:0; transition:transform 0.3s; }
+.faq-item.open .faq-q::after { transform:rotate(180deg); }
+.faq-a { display:none; padding:0 1.25rem 1rem; color:rgba(255,255,255,0.8); font-size:0.92rem; }
+.faq-item.open .faq-a { display:block; }
 
-  /* ====== FOOTER ====== */
-  footer {
-    background: var(--py-ink);
-    border-top: 3px solid var(--py-green);
-    padding: 2rem;
-    text-align:center;
-    color: rgba(255,255,255,0.6);
-    font-size: 0.9rem;
-  }
-  footer a { color: var(--py-accent); text-decoration:none; }
-  footer a:hover { text-decoration:underline; }
+/* ===================== MOBILE REGISTER BUTTON ===================== */
+.mobile-reg-fab {
+  display:none;
+  position:fixed; bottom:1.25rem; right:1.25rem; left:1.25rem;
+  background:var(--gold); color:var(--ink);
+  font-family:'Archivo Black',sans-serif; font-size:1rem;
+  text-transform:uppercase; letter-spacing:2px;
+  padding:1rem; border-radius:14px; border:none;
+  text-align:center; cursor:pointer; z-index:500;
+  box-shadow:0 8px 24px rgba(243,191,69,0.6);
+  animation:fab-pulse 2.5s ease-in-out infinite;
+}
+@keyframes fab-pulse { 0%,100%{box-shadow:0 8px 24px rgba(243,191,69,0.5)} 50%{box-shadow:0 8px 32px rgba(243,191,69,0.9)} }
 
-  @media (max-width: 640px) {
-    .form-row { grid-template-columns: 1fr; }
-    .prize-breakdown { grid-template-columns: 1fr; }
-    .prize-hero .total { font-size: 3rem; }
-    h1 { font-size: 2rem; letter-spacing: 2px; }
-  }
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 900px) {
+  .layout { grid-template-columns:1fr; }
+  .sidebar { display:none; }
+  .mobile-reg-fab { display:block; }
+  .page-body { padding:1.25rem 1rem 5rem; }
+}
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns:1fr; }
+  .prize-slots { grid-template-columns:1fr; gap:0.6rem; }
+  .prize-total { font-size:3.5rem; }
+  .event-title { font-size:2rem; letter-spacing:2px; }
+  .header-prizes { gap:0.5rem; }
+  .prize-chip { min-width:90px; padding:0.5rem 0.75rem; }
+  .prize-chip .amount { font-size:1.3rem; }
+  nav.tabs button { padding:0.9rem 1rem; font-size:0.78rem; }
+  .reg-form { padding:1.25rem; }
+}
 </style>
 </head>
 <body>
-<div class="bg-pattern"></div>
 
+<!-- ===== TICKER ===== -->
+<div class="ticker-wrap" aria-label="Event highlights">
+  <div class="ticker-track">
+    <!-- duplicated for seamless loop -->
+    <span class="ticker-item">🏆 <span class="ticker-money">$1,000</span> PRIZE POOL <span class="ticker-divider">|</span></span>
+    <span class="ticker-item">🥇 1ST PLACE <span class="ticker-money">$500</span> <span class="ticker-divider">|</span></span>
+    <span class="ticker-item">🥈 2ND PLACE <span class="ticker-money">$300</span> <span class="ticker-divider">|</span></span>
+    <span class="ticker-item">🥉 3RD PLACE <span class="ticker-money">$200</span> <span class="ticker-divider">|</span></span>
+    <span class="ticker-item">📅 MAY 16, 2026 · 1–5 PM <span class="ticker-divider">|</span></span>
+    <span class="ticker-item">📍 PICKLE YARD MAULDIN, SC <span class="ticker-divider">|</span></span>
+    <span class="ticker-item">🎯 12 TEAMS · 2 POOLS · 6 COURTS <span class="ticker-divider">|</span></span>
+    <span class="ticker-item">⚡ REGISTER NOW → SPOTS FILLING FAST <span class="ticker-divider">|</span></span>
+    <!-- duplicate -->
+    <span class="ticker-item">🏆 <span class="ticker-money">$1,000</span> PRIZE POOL <span class="ticker-divider">|</span></span>
+    <span class="ticker-item">🥇 1ST PLACE <span class="ticker-money">$500</span> <span class="ticker-divider">|</span></span>
+    <span class="ticker-item">🥈 2ND PLACE <span class="ticker-money">$300</span> <span class="ticker-divider">|</span></span>
+    <span class="ticker-item">🥉 3RD PLACE <span class="ticker-money">$200</span> <span class="ticker-divider">|</span></span>
+    <span class="ticker-item">📅 MAY 16, 2026 · 1–5 PM <span class="ticker-divider">|</span></span>
+    <span class="ticker-item">📍 PICKLE YARD MAULDIN, SC <span class="ticker-divider">|</span></span>
+    <span class="ticker-item">🎯 12 TEAMS · 2 POOLS · 6 COURTS <span class="ticker-divider">|</span></span>
+    <span class="ticker-item">⚡ REGISTER NOW → SPOTS FILLING FAST <span class="ticker-divider">|</span></span>
+  </div>
+</div>
+
+<!-- ===== HEADER ===== -->
 <header>
+  <div class="ball ball-1"></div>
+  <div class="ball ball-2"></div>
+  <div class="ball ball-3"></div>
+  <div class="ball ball-4"></div>
   <div class="header-inner">
     <div class="brand-row">
-      <div class="py-monogram" aria-label="Pickle Yard logo">
-        <!-- PY monogram in brand green + teal -->
+      <div class="py-mark">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 172 171">
           <g transform="translate(0.815 -0.5)">
             <path d="M108.2,39.617a68.586,68.586,0,1,0,48.5,20.088,68.135,68.135,0,0,0-48.5-20.088M149.931,149.93A59.012,59.012,0,1,1,167.215,108.2a58.627,58.627,0,0,1-17.284,41.728" transform="translate(-22.314 -22.597)" fill="#009F67"/>
@@ -472,40 +547,56 @@
       </div>
       <div class="brand-text">
         <div class="brand-name">Pickle Yard</div>
-        <div class="brand-tag">Mauldin, SC</div>
+        <div class="brand-tag">Mauldin, SC · Indoor Pickleball</div>
       </div>
     </div>
 
-    <h1>Moneyball <span class="highlight">Throwdown</span></h1>
-    <div class="subtitle">12 Teams · 2 Pools · 1 Champion</div>
+    <div class="event-title">
+      Pickle Yard<br>
+      <span class="word-money">Moneyball Throwdown</span>
+    </div>
+    <div class="event-subtitle">12 Teams · 2 Pools · 6 Courts · 1 Champion</div>
+
+    <!-- Prize chips in header -->
+    <div class="header-prizes">
+      <div class="prize-chip g1">
+        <div class="place">🥇 1st Place</div>
+        <div class="amount">$500</div>
+      </div>
+      <div class="prize-chip g2">
+        <div class="place">🥈 2nd Place</div>
+        <div class="amount">$300</div>
+      </div>
+      <div class="prize-chip g3">
+        <div class="place">🥉 3rd Place</div>
+        <div class="amount">$200</div>
+      </div>
+    </div>
 
     <div class="event-meta">
       <div class="meta-chip">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19a2 2 0 002 2h14c1.1 0 2-.9 2-2V5a2 2 0 00-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-        Saturday, May 16, 2026
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2V5a2 2 0 00-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+        Sat, May 16, 2026
       </div>
       <div class="meta-chip">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
         1:00 – 5:00 PM
       </div>
       <div class="meta-chip">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 019.5 9 2.5 2.5 0 0112 6.5 2.5 2.5 0 0114.5 9a2.5 2.5 0 01-2.5 2.5z"/></svg>
-        15 Jenkins Ct, Mauldin SC
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 019.5 9 2.5 2.5 0 0112 6.5a2.5 2.5 0 012.5 2.5A2.5 2.5 0 0112 11.5z"/></svg>
+        Pickle Yard · Mauldin SC
       </div>
-      <div class="meta-chip">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V20h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-        $1,000 Prize Pool
+      <div class="meta-chip" style="border-color:rgba(0,159,103,0.5); background:rgba(0,159,103,0.15);">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        6 Indoor Courts
       </div>
-    </div>
-
-    <div style="margin-top:2rem;">
-      <a href="#register" class="btn btn-accent" onclick="showTab('register')">Register Your Team →</a>
     </div>
   </div>
 </header>
 
-<nav class="nav-tabs">
-  <div class="nav-inner">
+<!-- ===== NAV ===== -->
+<nav class="tabs">
+  <div class="tabs-inner">
     <button class="active" data-tab="overview">Overview</button>
     <button data-tab="format">Format</button>
     <button data-tab="schedule">Schedule</button>
@@ -513,578 +604,565 @@
     <button data-tab="teams">Teams</button>
     <button data-tab="register">Register</button>
     <button data-tab="faq">FAQ</button>
-    <button data-tab="admin" style="color: var(--py-accent); opacity:0.75;">🔒 Admin</button>
+    <button data-tab="admin" style="color:var(--gold);opacity:.7;">🔒 Admin</button>
   </div>
 </nav>
 
-<main>
-  <!-- OVERVIEW -->
-  <section id="overview" class="panel active">
-    <h2>Tournament Overview</h2>
-    <div class="grid-2">
-      <div class="card">
-        <h3>The Event</h3>
-        <p>The <strong>Pickle Yard Moneyball Throwdown</strong> is a one-day, winner-takes-it pickleball tournament. Twelve teams battle through pool play, then the top 3 from each pool cross into a single-elimination bracket. One afternoon. One champion. A thousand-dollar pot on the line.</p>
-      </div>
-      <div class="card">
-        <h3>Quick Facts</h3>
-        <ul style="list-style:none; padding:0;">
-          <li style="padding:0.4rem 0; border-bottom:1px solid rgba(0,159,103,0.15);"><strong style="color:var(--py-accent);">Teams:</strong> 12 (2 players per team)</li>
-          <li style="padding:0.4rem 0; border-bottom:1px solid rgba(0,159,103,0.15);"><strong style="color:var(--py-accent);">Pools:</strong> 2 pools of 6</li>
-          <li style="padding:0.4rem 0; border-bottom:1px solid rgba(0,159,103,0.15);"><strong style="color:var(--py-accent);">Pool Play:</strong> 5 games each · round robin</li>
-          <li style="padding:0.4rem 0; border-bottom:1px solid rgba(0,159,103,0.15);"><strong style="color:var(--py-accent);">Playoffs:</strong> Top 3 from each pool</li>
-          <li style="padding:0.4rem 0;"><strong style="color:var(--py-accent);">Prize Pool:</strong> $1,000 · paid top 3</li>
-        </ul>
-      </div>
-    </div>
+<!-- ===== MOBILE FAB ===== -->
+<button class="mobile-reg-fab" onclick="showTab('register')">Register Your Team →</button>
 
-    <div class="card">
-      <h3>Venue — Pickle Yard Mauldin</h3>
-      <p>15 Jenkins Court, Mauldin, SC 29662 · 6 indoor courts · full-service bar & kitchen (Dilly's Oasis) · outdoor patio.</p>
-      <p style="margin-top:0.75rem; color:rgba(255,255,255,0.75);">All matches played indoors on championship-grade courts. Doors open at 12:30 PM for warm-up and check-in.</p>
-    </div>
-  </section>
+<!-- ===== PAGE BODY ===== -->
+<div class="page-body">
+  <div class="layout">
 
-  <!-- FORMAT -->
-  <section id="format" class="panel">
-    <h2>Tournament Format</h2>
+    <!-- LEFT: CONTENT PANELS -->
+    <div class="content">
 
-    <div class="format-step">
-      <div class="step-num">1</div>
-      <div class="step-body">
-        <h4>Pool Play — 5 Round Robin Games</h4>
-        <p>12 teams split into Pool A and Pool B (6 teams each). Every team plays the 5 other teams in its pool once. Wins, then point differential, then head-to-head break ties.</p>
-      </div>
-    </div>
-
-    <div class="format-step">
-      <div class="step-num">2</div>
-      <div class="step-body">
-        <h4>Top 3 Each Pool Advance</h4>
-        <p>Six teams qualify for the playoff bracket: A1, A2, A3 from Pool A and B1, B2, B3 from Pool B. The bottom three in each pool are eliminated.</p>
-      </div>
-    </div>
-
-    <div class="format-step">
-      <div class="step-num">3</div>
-      <div class="step-body">
-        <h4>#1 Seeds Get a Bye</h4>
-        <p>A1 and B1 — the top team from each pool — skip the quarterfinals and go straight to the semifinals.</p>
-      </div>
-    </div>
-
-    <div class="format-step">
-      <div class="step-num">4</div>
-      <div class="step-body">
-        <h4>Cross-Play Quarterfinals</h4>
-        <p>A2 vs B3, and B2 vs A3 — pool winners keep working, pool runners-up fight to join them. Two matches, two survivors.</p>
-      </div>
-    </div>
-
-    <div class="format-step">
-      <div class="step-num">5</div>
-      <div class="step-body">
-        <h4>Semifinals & Final</h4>
-        <p>A1 takes the QF1 winner. B1 takes the QF2 winner. Losers play for 3rd place. Winners meet in the Final. Champion takes $500.</p>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:2rem;">
-      <h3>Scoring & Match Length</h3>
-      <p><strong style="color:var(--py-accent);">Pool play:</strong> Games to 15, win by 2, single game (approx. 15–18 min).</p>
-      <p><strong style="color:var(--py-accent);">Playoffs:</strong> Best of 3 to 11, win by 2. Final: best of 3 to 15, win by 2.</p>
-      <p><strong style="color:var(--py-accent);">"Moneyball" rule:</strong> The last point of each pool-play game is worth 2 points if the serving team wins the rally. Swings close games and rewards closers.</p>
-    </div>
-  </section>
-
-  <!-- SCHEDULE -->
-  <section id="schedule" class="panel">
-    <h2>Schedule — May 16, 2026</h2>
-    <div class="card" style="padding:0;">
-      <table class="schedule">
-        <thead>
-          <tr><th>Time</th><th>Block</th><th>Courts</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>12:30 PM</td><td>Doors open · Check-in · Warm-up</td><td>All</td></tr>
-          <tr><td>1:00 PM</td><td>Pool Play Round 1 (Pool A · Pool B)</td><td>6 courts in use</td></tr>
-          <tr><td>1:30 PM</td><td>Pool Play Round 2</td><td>6 courts</td></tr>
-          <tr><td>2:00 PM</td><td>Pool Play Round 3</td><td>6 courts</td></tr>
-          <tr><td>2:30 PM</td><td>Pool Play Round 4</td><td>6 courts</td></tr>
-          <tr><td>3:00 PM</td><td>Pool Play Round 5 · Standings posted</td><td>6 courts</td></tr>
-          <tr><td>3:30 PM</td><td>Quarterfinals (2 matches · best of 3 to 11)</td><td>2 courts</td></tr>
-          <tr><td>4:00 PM</td><td>Semifinals (A1 &amp; B1 enter)</td><td>2 courts</td></tr>
-          <tr><td>4:30 PM</td><td>3rd-Place Match · Final (bo3 to 15)</td><td>2 courts</td></tr>
-          <tr><td>5:00 PM</td><td>Trophy &amp; Prize Ceremony · Dilly's Oasis</td><td>—</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- PRIZE POOL -->
-  <section id="prize" class="panel">
-    <h2>Prize Pool</h2>
-
-    <div class="prize-hero">
-      <div class="label">Total Purse</div>
-      <div class="total">$1,000</div>
-      <div style="font-weight:600;">Split between the top 3 teams</div>
-
-      <div class="prize-breakdown">
-        <div class="prize-slot gold">
-          <div class="prize-place">🥇 1st</div>
-          <div class="prize-amount">$500</div>
+      <!-- OVERVIEW -->
+      <section id="overview" class="panel active">
+        <h2>Tournament Overview</h2>
+        <div class="grid-2">
+          <div class="card">
+            <h3>The Event</h3>
+            <p>The <strong>Pickle Yard Moneyball Throwdown</strong> is a one-day pickleball showdown where 12 teams battle through pool play before the top 6 meet in a single-elimination bracket. One afternoon. $1,000 on the line. The best two players walk away with bragging rights and cash.</p>
+          </div>
+          <div class="card">
+            <h3>Quick Facts</h3>
+            <ul style="list-style:none; padding:0;">
+              <li style="padding:.4rem 0; border-bottom:1px solid rgba(0,159,103,0.15);">
+                <strong style="color:var(--gold);">Format:</strong> 2 pools of 6 · round robin
+              </li>
+              <li style="padding:.4rem 0; border-bottom:1px solid rgba(0,159,103,0.15);">
+                <strong style="color:var(--gold);">Games:</strong> 5 per team in pool play
+              </li>
+              <li style="padding:.4rem 0; border-bottom:1px solid rgba(0,159,103,0.15);">
+                <strong style="color:var(--gold);">Courts:</strong> All 6 run simultaneously
+              </li>
+              <li style="padding:.4rem 0; border-bottom:1px solid rgba(0,159,103,0.15);">
+                <strong style="color:var(--gold);">Playoffs:</strong> Top 3 each pool · #1 seeds get bye
+              </li>
+              <li style="padding:.4rem 0;">
+                <strong style="color:var(--gold);">Entry:</strong> $60 per team · Cap: 12 teams
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="prize-slot silver">
-          <div class="prize-place">🥈 2nd</div>
-          <div class="prize-amount">$300</div>
+        <div class="card">
+          <h3>Venue — Pickle Yard Mauldin</h3>
+          <p>15 Jenkins Court, Mauldin, SC 29662 · 6 indoor championship courts · Dilly's Oasis full-service bar &amp; kitchen · outdoor patio · free spectator entry.</p>
+          <p style="margin-top:.75rem; color:rgba(255,255,255,0.7);">Doors open at <strong>12:30 PM</strong> for check-in and warm-up. All matches played indoors, climate-controlled.</p>
         </div>
-        <div class="prize-slot bronze">
-          <div class="prize-place">🥉 3rd</div>
-          <div class="prize-amount">$200</div>
+      </section>
+
+      <!-- FORMAT -->
+      <section id="format" class="panel">
+        <h2>Tournament Format</h2>
+        <div class="step"><div class="step-num">1</div><div><h4>Pool Play — 5 Round Robin Games</h4><p>12 teams split into Pool A and Pool B (6 each). Every team plays the 5 others in their pool. All 6 courts run simultaneously — 3 Pool A matches, 3 Pool B matches per round.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div><h4>Top 3 From Each Pool Advance</h4><p>A1, A2, A3 and B1, B2, B3 — six teams qualify for the bracket. Bottom 3 from each pool are eliminated. Standings: Wins → Point differential → Points-for.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div><h4>#1 Seeds Get a Bye</h4><p>A1 and B1 — pool winners — skip the quarterfinals and go straight to semifinals. They earned the break.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div><h4>Cross-Pool Quarterfinals (Courts 1 &amp; 2)</h4><p><strong>QF1:</strong> A2 vs B3 · Court 1 &nbsp;|&nbsp; <strong>QF2:</strong> B2 vs A3 · Court 2. Two matches, two survivors who face the pool winners.</p></div></div>
+        <div class="step"><div class="step-num">5</div><div><h4>Semifinals, 3rd Place &amp; Final (Courts 1 &amp; 2)</h4><p>SF1: A1 vs QF1 winner · SF2: B1 vs QF2 winner. Losers meet for $200 on Court 2. Winners meet in the Final on center <strong>Court 1</strong> for the $500 championship.</p></div></div>
+        <div class="card" style="margin-top:1.5rem; border-color:rgba(243,191,69,0.3);">
+          <h3>⚡ The Moneyball Rule</h3>
+          <p>The final rally of each pool-play game is worth <strong>2 points</strong> if the serving team wins it. Close games flip in an instant — rewards closers, punishes the comfortable.</p>
+          <div style="margin-top:1rem; display:flex; gap:1rem; flex-wrap:wrap;">
+            <span style="background:rgba(0,159,103,0.2); border:1px solid var(--green); padding:.4rem .9rem; border-radius:999px; font-size:.82rem; font-weight:700;">Pool play · to 15 win by 2</span>
+            <span style="background:rgba(243,191,69,0.15); border:1px solid var(--gold); padding:.4rem .9rem; border-radius:999px; font-size:.82rem; font-weight:700;">Playoffs · best of 3 to 11</span>
+            <span style="background:rgba(224,53,53,0.15); border:1px solid var(--red); padding:.4rem .9rem; border-radius:999px; font-size:.82rem; font-weight:700;">Final · best of 3 to 15</span>
+          </div>
         </div>
+      </section>
+
+      <!-- SCHEDULE -->
+      <section id="schedule" class="panel">
+        <h2>Schedule — May 16, 2026</h2>
+        <div class="card" style="padding:0; overflow:hidden;">
+          <table class="schedule">
+            <thead><tr><th>Time</th><th>Block</th><th>Courts</th></tr></thead>
+            <tbody>
+              <tr><td>12:30 PM</td><td>Doors open · Check-in · Warm-up</td><td>All 6</td></tr>
+              <tr><td>1:00 PM</td><td>Pool Play Round 1</td><td>1–6</td></tr>
+              <tr><td>1:30 PM</td><td>Pool Play Round 2</td><td>1–6</td></tr>
+              <tr><td>2:00 PM</td><td>Pool Play Round 3</td><td>1–6</td></tr>
+              <tr><td>2:30 PM</td><td>Pool Play Round 4</td><td>1–6</td></tr>
+              <tr><td>3:00 PM</td><td>Pool Play Round 5 · Standings locked</td><td>1–6</td></tr>
+              <tr><td>3:30 PM</td><td>Quarterfinals (QF1 · QF2) — best of 3 to 11</td><td>1, 2</td></tr>
+              <tr><td>4:00 PM</td><td>Semifinals (A1 &amp; B1 enter)</td><td>1, 2</td></tr>
+              <tr><td>4:30 PM</td><td>3rd-Place Match (Ct 2) · Final (Ct 1) — best of 3 to 15</td><td>1, 2</td></tr>
+              <tr><td>5:00 PM</td><td>🏆 Trophy &amp; Prize Ceremony · Dilly's Oasis</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PRIZE -->
+      <section id="prize" class="panel">
+        <h2>Prize Pool</h2>
+        <div class="prize-hero">
+          <div class="prize-label">Total Purse</div>
+          <div class="prize-total">$1,000</div>
+          <div style="color:rgba(255,255,255,0.7); font-size:.9rem; margin-top:.5rem;">Paid out top 3 at the ceremony · split 50/50 between team partners</div>
+          <div class="prize-slots">
+            <div class="prize-slot s1"><div class="rank">🥇 1st</div><div class="cash">$500</div></div>
+            <div class="prize-slot s2"><div class="rank">🥈 2nd</div><div class="cash">$300</div></div>
+            <div class="prize-slot s3"><div class="rank">🥉 3rd</div><div class="cash">$200</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Payout Details</h3>
+          <p>Cash paid at the ceremony. Each team splits 50/50 between partners. If fewer than 12 teams register, Pickle Yard will notify entrants of any prize pool adjustments before event day.</p>
+        </div>
+      </section>
+
+      <!-- TEAMS -->
+      <section id="teams" class="panel">
+        <h2>Registered Teams</h2>
+        <div style="margin-bottom:1.25rem;">
+          <div class="cap-bar"><div class="cap-fill" id="pub-cap-fill" style="width:0%"></div></div>
+          <div class="cap-label" id="pub-cap-label">Loading...</div>
+        </div>
+        <h3 style="color:var(--green); margin-bottom:.75rem;">Pool A</h3>
+        <div class="team-grid" id="teams-a"></div>
+        <h3 style="color:#3EC8D8; margin-top:1.75rem; margin-bottom:.75rem;">Pool B</h3>
+        <div class="team-grid" id="teams-b"></div>
+        <div style="text-align:center; margin-top:1.5rem;">
+          <button class="btn ghost" onclick="showTab('register')">Register Your Team</button>
+        </div>
+      </section>
+
+      <!-- REGISTER -->
+      <section id="register" class="panel">
+        <div class="reg-form">
+          <h2>Register Your Team</h2>
+          <div style="margin-bottom:1.25rem;">
+            <div class="cap-bar"><div class="cap-fill" id="reg-cap-fill" style="width:0%"></div></div>
+            <div class="cap-label" id="reg-cap-label">Loading slots...</div>
+          </div>
+
+          <form id="reg-form" onsubmit="handleRegister(event)" novalidate>
+            <div class="form-grid single">
+              <div class="form-group">
+                <label>Team Name *</label>
+                <input type="text" name="teamName" required placeholder="e.g. Dinks on a Plane" autocomplete="off">
+              </div>
+            </div>
+
+            <div class="form-divider"><span>Player 1</span></div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" name="p1Name" required autocomplete="name">
+              </div>
+              <div class="form-group">
+                <label>DUPR / Skill Level</label>
+                <input type="text" name="p1Dupr" placeholder="e.g. 4.0 DUPR">
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Email *</label>
+                <input type="email" name="p1Email" required autocomplete="email" inputmode="email">
+              </div>
+              <div class="form-group">
+                <label>Phone *</label>
+                <input type="tel" name="p1Phone" required autocomplete="tel" inputmode="tel" placeholder="864-555-0100">
+              </div>
+            </div>
+
+            <div class="form-divider"><span>Player 2</span></div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" name="p2Name" required autocomplete="off">
+              </div>
+              <div class="form-group">
+                <label>DUPR / Skill Level</label>
+                <input type="text" name="p2Dupr" placeholder="e.g. 3.75 DUPR">
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Email *</label>
+                <input type="email" name="p2Email" required inputmode="email">
+              </div>
+              <div class="form-group">
+                <label>Phone *</label>
+                <input type="tel" name="p2Phone" required inputmode="tel" placeholder="864-555-0100">
+              </div>
+            </div>
+
+            <div class="form-divider"><span>Details</span></div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>T-Shirt Sizes (P1 / P2)</label>
+                <input type="text" name="shirts" placeholder="e.g. M / L">
+              </div>
+              <div class="form-group">
+                <label>Notes (optional)</label>
+                <input type="text" name="notes" placeholder="Injuries, dietary, etc.">
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Register Team — $60 Entry →</button>
+            <p class="reg-footer">All data stays in your browser — nothing is sent to an external server. Payment handled with Pickle Yard staff at check-in.</p>
+          </form>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq" class="panel">
+        <h2>FAQ</h2>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What skill level is this for?</div><div class="faq-a">Intermediate to advanced — 3.5+ DUPR recommended but not enforced. Expect competitive play; this is a money event.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I sign up solo?</div><div class="faq-a">Email <a href="mailto:info@thepickleyard.com" style="color:var(--gold);">info@thepickleyard.com</a> — Pickle Yard keeps a solo list and pairs when possible.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What's the refund/cancellation policy?</div><div class="faq-a">Full refund up to 7 days before the event. After that, credit toward a future Pickle Yard event.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What paddle and ball do we use?</div><div class="faq-a">Bring your own USAP-approved paddle. Official ball: Franklin X-40 indoor.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Are spectators welcome?</div><div class="faq-a">Absolutely — free entry for spectators. Grab a seat at Dilly's Oasis and cheer your people on.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does payment work?</div><div class="faq-a">Register here to hold your spot. $60 per team is collected by Pickle Yard staff when you check in on event day.</div></div>
+      </section>
+
+      <!-- ADMIN -->
+      <section id="admin" class="panel">
+        <h2>🔒 Tournament Admin</h2>
+        <div id="admin-login-wrap">
+          <div class="card">
+            <h3>Admin Login</h3>
+            <p style="color:rgba(255,255,255,.7); margin-bottom:1.25rem;">Enter the admin PIN to access registrations.</p>
+            <form onsubmit="adminLogin(event)" style="max-width:320px; margin:0 auto;">
+              <div class="form-group" style="margin-bottom:1rem;">
+                <label>Admin PIN</label>
+                <input type="password" id="admin-pin" placeholder="••••" style="text-align:center; letter-spacing:6px; font-size:1.2rem;" autocomplete="off">
+              </div>
+              <button type="submit" class="btn" style="width:100%;">Unlock →</button>
+              <p style="text-align:center; margin-top:.75rem; font-size:.78rem; color:rgba(255,255,255,.4);">Default PIN: <code style="color:var(--gold);">1987</code></p>
+            </form>
+          </div>
+        </div>
+        <div id="admin-dashboard" style="display:none;">
+          <div class="admin-stats">
+            <div class="stat-box"><div class="sv2" id="s-total">0</div><div class="sk2">Teams</div></div>
+            <div class="stat-box"><div class="sv2" id="s-slots">12</div><div class="sk2">Slots Left</div></div>
+            <div class="stat-box"><div class="sv2" id="s-paid">0</div><div class="sk2">Paid</div></div>
+            <div class="stat-box"><div class="sv2" id="s-unpaid">0</div><div class="sk2">Unpaid</div></div>
+            <div class="stat-box"><div class="sv2" id="s-pA">0</div><div class="sk2">Pool A</div></div>
+            <div class="stat-box"><div class="sv2" id="s-pB">0</div><div class="sk2">Pool B</div></div>
+          </div>
+          <div class="admin-bar">
+            <button class="btn" onclick="exportCSV()">⬇ CSV</button>
+            <button class="btn ghost" onclick="exportJSON()">⬇ JSON</button>
+            <button class="btn ghost" onclick="seedTestTeams()">🧪 Seed 12 test teams</button>
+            <button class="btn ghost" onclick="adminLogout()">Logout</button>
+            <div style="flex:1"></div>
+            <button class="btn danger" onclick="clearAllTeams()">🗑 Clear All</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="admin-table">
+              <thead><tr><th>Pool</th><th>Team</th><th>Player 1</th><th>Player 2</th><th>Emails</th><th>Phones</th><th>DUPR</th><th>Shirts</th><th>Notes</th><th>Registered</th><th>Paid</th><th>Act.</th></tr></thead>
+              <tbody id="admin-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /content -->
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-sticky">
+
+        <!-- Register CTA -->
+        <div class="sb-card sb-register">
+          <div class="cap-slots" id="sb-slots">—</div>
+          <div class="cap-txt">Spots remaining of 12</div>
+          <div class="cap-bar" style="margin-bottom:1rem;"><div class="cap-fill" id="sb-cap-fill" style="width:0%"></div></div>
+          <button class="reg-btn" onclick="showTab('register')">Register Now →</button>
+          <p style="font-size:.75rem; margin-top:.75rem; opacity:.7;">$60 per team · pay at check-in</p>
+        </div>
+
+        <!-- Prize breakdown -->
+        <div class="sb-card sb-prize">
+          <h3 style="margin-bottom:0.6rem;">💰 Prize Pool</h3>
+          <div class="sb-prize-row"><span class="label">🥇 1st Place</span><span class="cash" style="color:#FFD700;">$500</span></div>
+          <div class="sb-prize-row"><span class="label">🥈 2nd Place</span><span class="cash" style="color:var(--silver);">$300</span></div>
+          <div class="sb-prize-row"><span class="label">🥉 3rd Place</span><span class="cash" style="color:var(--bronze);">$200</span></div>
+          <div class="sb-prize-row" style="border-top: 2px solid rgba(243,191,69,0.3); margin-top:.5rem; padding-top:.75rem;">
+            <span class="label" style="font-weight:700;">Total Purse</span>
+            <span class="cash" style="color:var(--gold); font-size:1.4rem;">$1,000</span>
+          </div>
+        </div>
+
+        <!-- Pickleball visual card -->
+        <div class="sb-card sb-ad">
+          <div class="pb-court">
+            <!-- Inline court SVG -->
+            <svg class="court-svg" viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+              <rect width="200" height="130" fill="#1A3A2A" rx="6"/>
+              <!-- Court surface -->
+              <rect x="20" y="15" width="160" height="100" fill="#1E5C3A" rx="3"/>
+              <!-- Lines -->
+              <rect x="20" y="15" width="160" height="100" fill="none" stroke="#7FFFD4" stroke-width="1.5" rx="3"/>
+              <!-- Net -->
+              <line x1="100" y1="15" x2="100" y2="115" stroke="#7FFFD4" stroke-width="2"/>
+              <!-- Kitchen lines -->
+              <line x1="20" y1="42" x2="100" y2="42" stroke="#7FFFD4" stroke-width="1"/>
+              <line x1="100" y1="42" x2="160" y2="42" stroke="#7FFFD4" stroke-width="1" opacity="0"/>
+              <line x1="100" y1="88" x2="160" y2="88" stroke="#7FFFD4" stroke-width="1"/>
+              <line x1="20" y1="88" x2="100" y2="88" stroke="#7FFFD4" stroke-width="1" opacity="0"/>
+              <!-- Center service line -->
+              <line x1="60" y1="42" x2="60" y2="88" stroke="#7FFFD4" stroke-width="1"/>
+              <line x1="140" y1="42" x2="140" y2="88" stroke="#7FFFD4" stroke-width="1"/>
+              <!-- Balls -->
+              <circle cx="70" cy="65" r="6" fill="#F3BF45"/>
+              <circle cx="130" cy="65" r="6" fill="#F3BF45"/>
+              <!-- Players (dots) -->
+              <circle cx="50" cy="50" r="5" fill="#009F67"/>
+              <circle cx="70" cy="75" r="5" fill="#009F67"/>
+              <circle cx="150" cy="80" r="5" fill="#004A5E"/>
+              <circle cx="130" cy="55" r="5" fill="#004A5E"/>
+              <!-- Court label -->
+              <text x="100" y="128" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.5)" font-family="Arial">PICKLE YARD · 6 INDOOR COURTS</text>
+            </svg>
+            <h4>6 Championship Courts</h4>
+            <p>All courts run simultaneously during pool play. Courts 1–3 for Pool A, Courts 4–6 for Pool B.</p>
+          </div>
+        </div>
+
+        <!-- Event stats -->
+        <div class="sb-card sb-stats">
+          <h3 style="margin-bottom:.6rem;">📊 Event Stats</h3>
+          <div class="stat-row"><span class="sk">Teams</span><span class="sv">12</span></div>
+          <div class="stat-row"><span class="sk">Pool Games Each</span><span class="sv">5</span></div>
+          <div class="stat-row"><span class="sk">Total Pool Matches</span><span class="sv">30</span></div>
+          <div class="stat-row"><span class="sk">Courts Available</span><span class="sv">6</span></div>
+          <div class="stat-row"><span class="sk">Playoff Matches</span><span class="sv">6</span></div>
+          <div class="stat-row"><span class="sk">Prize Pool</span><span class="sv">$1,000</span></div>
+        </div>
+
+        <!-- Countdown -->
+        <div class="sb-card sb-countdown">
+          <div class="cdown-label">⏱ Time Until Throwdown</div>
+          <div class="cdown-boxes">
+            <div class="cdown-box"><div class="n" id="cd-d">—</div><div class="u">Days</div></div>
+            <div class="cdown-box"><div class="n" id="cd-h">—</div><div class="u">Hrs</div></div>
+            <div class="cdown-box"><div class="n" id="cd-m">—</div><div class="u">Min</div></div>
+            <div class="cdown-box"><div class="n" id="cd-s">—</div><div class="u">Sec</div></div>
+          </div>
+        </div>
+
       </div>
-    </div>
+    </aside>
 
-    <div class="card">
-      <h3>Payout Details</h3>
-      <p>Prizes are paid by check or Venmo at the end of the ceremony. Each team splits their prize 50/50 between the two players. If the tournament cap (12 teams) isn't reached, Pickle Yard may adjust the pool — entrants will be notified in writing before the event.</p>
-    </div>
-  </section>
+  </div><!-- /layout -->
+</div><!-- /page-body -->
 
-  <!-- TEAMS -->
-  <section id="teams" class="panel">
-    <h2>Registered Teams</h2>
-    <p style="margin-bottom:1.5rem; color:rgba(255,255,255,0.75);">Live roster — updates as teams register. Pool assignments are published 48 hours before the event.</p>
-
-    <h3 style="color: var(--py-green);">Pool A</h3>
-    <div class="team-grid" id="teams-pool-a"></div>
-
-    <h3 style="color: #3DB8D0; margin-top:2rem;">Pool B</h3>
-    <div class="team-grid" id="teams-pool-b"></div>
-
-    <div class="text-center" style="margin-top:2rem;">
-      <a class="btn btn-outline" onclick="showTab('register')">Add Your Team</a>
-    </div>
-  </section>
-
-  <!-- REGISTER -->
-  <section id="register" class="panel">
-    <h2>Register Your Team</h2>
-    <p style="text-align:center; margin-bottom:2rem; color:rgba(255,255,255,0.8);">
-      Entry fee: <strong style="color:var(--py-accent);">$60 per team</strong> · Cap: 12 teams · First come, first served.
-    </p>
-
-    <form class="register" onsubmit="handleRegister(event)">
-      <div class="form-row single">
-        <div>
-          <label>Team Name</label>
-          <input type="text" name="teamName" required placeholder="e.g. Dinks on a Plane">
-        </div>
-      </div>
-      <div class="form-row">
-        <div>
-          <label>Player 1 Full Name</label>
-          <input type="text" name="p1Name" required>
-        </div>
-        <div>
-          <label>Player 1 DUPR / Skill</label>
-          <input type="text" name="p1Dupr" placeholder="e.g. 4.0 or 3.75 DUPR">
-        </div>
-      </div>
-      <div class="form-row">
-        <div>
-          <label>Player 1 Email</label>
-          <input type="email" name="p1Email" required>
-        </div>
-        <div>
-          <label>Player 1 Phone</label>
-          <input type="tel" name="p1Phone" required>
-        </div>
-      </div>
-
-      <hr style="border:none; border-top:1px solid rgba(0,159,103,0.3); margin:1.5rem 0;">
-
-      <div class="form-row">
-        <div>
-          <label>Player 2 Full Name</label>
-          <input type="text" name="p2Name" required>
-        </div>
-        <div>
-          <label>Player 2 DUPR / Skill</label>
-          <input type="text" name="p2Dupr" placeholder="e.g. 4.0 or 3.75 DUPR">
-        </div>
-      </div>
-      <div class="form-row">
-        <div>
-          <label>Player 2 Email</label>
-          <input type="email" name="p2Email" required>
-        </div>
-        <div>
-          <label>Player 2 Phone</label>
-          <input type="tel" name="p2Phone" required>
-        </div>
-      </div>
-
-      <div class="form-row single">
-        <div>
-          <label>T-Shirt Sizes (both players)</label>
-          <input type="text" name="shirts" placeholder="e.g. M / L">
-        </div>
-      </div>
-      <div class="form-row single">
-        <div>
-          <label>Anything We Should Know? (optional)</label>
-          <textarea name="notes" rows="3" placeholder="Injuries, dietary, paddle preferences..."></textarea>
-        </div>
-      </div>
-
-      <div class="text-center" style="margin-top:1.5rem;">
-        <button type="submit" class="btn">Submit Registration →</button>
-        <p style="margin-top:0.9rem; font-size:0.85rem; color:rgba(255,255,255,0.6);">
-          Registration is saved locally. Payment details handled in person with Pickle Yard staff.
-        </p>
-      </div>
-    </form>
-  </section>
-
-  <!-- ADMIN (password-gated) -->
-  <section id="admin" class="panel">
-    <h2>🔒 Tournament Admin</h2>
-
-    <!-- LOGIN GATE -->
-    <div id="admin-login" class="card" style="max-width:480px; margin:0 auto; text-align:center;">
-      <h3>Admin Login</h3>
-      <p style="color:rgba(255,255,255,0.75); margin-bottom:1.5rem;">Enter the tournament admin PIN to view registrations and manage teams.</p>
-      <form onsubmit="adminLogin(event)">
-        <input type="password" id="admin-pin" placeholder="Admin PIN" autocomplete="off" style="text-align:center; letter-spacing:4px; font-size:1.1rem; margin-bottom:1rem;">
-        <div>
-          <button type="submit" class="btn">Unlock →</button>
-        </div>
-        <p style="margin-top:1rem; font-size:0.8rem; color:rgba(255,255,255,0.5);">Default PIN: <code style="color:var(--py-accent);">1987</code> — change in the source code for production use.</p>
-      </form>
-    </div>
-
-    <!-- ADMIN DASHBOARD -->
-    <div id="admin-dashboard" style="display:none;">
-      <div class="admin-stats">
-        <div class="stat-box"><div class="stat-val" id="stat-total">0</div><div class="stat-label">Teams Registered</div></div>
-        <div class="stat-box"><div class="stat-val" id="stat-slots">12</div><div class="stat-label">Slots Remaining</div></div>
-        <div class="stat-box"><div class="stat-val" id="stat-paid">0</div><div class="stat-label">Paid</div></div>
-        <div class="stat-box"><div class="stat-val" id="stat-unpaid">0</div><div class="stat-label">Unpaid</div></div>
-        <div class="stat-box"><div class="stat-val" id="stat-poolA">0</div><div class="stat-label">Pool A</div></div>
-        <div class="stat-box"><div class="stat-val" id="stat-poolB">0</div><div class="stat-label">Pool B</div></div>
-      </div>
-
-      <div class="admin-toolbar">
-        <button class="btn" onclick="exportCSV()">⬇ Export CSV</button>
-        <button class="btn btn-outline" onclick="exportJSON()">⬇ Export JSON</button>
-        <button class="btn btn-outline" onclick="seedTestTeams()">🧪 Seed 12 test teams</button>
-        <button class="btn btn-outline" onclick="adminLogout()">Logout</button>
-        <div style="flex:1;"></div>
-        <button class="btn" style="background:linear-gradient(135deg,#DD3333 0%,#AA2222 100%);" onclick="clearAllTeams()">🗑 Clear All</button>
-      </div>
-
-      <div style="overflow-x:auto;">
-        <table class="admin-table" id="admin-table">
-          <thead>
-            <tr>
-              <th>Pool</th>
-              <th>Team Name</th>
-              <th>Player 1</th>
-              <th>Player 2</th>
-              <th>Emails</th>
-              <th>Phones</th>
-              <th>DUPR</th>
-              <th>Shirts</th>
-              <th>Notes</th>
-              <th>Registered</th>
-              <th>Paid</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="admin-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section id="faq" class="panel">
-    <h2>Frequently Asked</h2>
-    <div class="card"><h3>What skill level is this for?</h3><p>Intermediate to advanced — 3.5+ DUPR recommended but not required. It's a money event, expect competitive play.</p></div>
-    <div class="card"><h3>Can I sign up solo and be paired?</h3><p>Email <a href="mailto:info@thepickleyard.com" style="color:var(--py-accent);">info@thepickleyard.com</a> — we keep a solo list and pair when we can.</p></div>
-    <div class="card"><h3>What if I need to cancel?</h3><p>Full refund up to 7 days before the event. After that, credit toward a future Pickle Yard event.</p></div>
-    <div class="card"><h3>What paddles / balls?</h3><p>Bring your own paddle (any USAP-approved). Official ball: Franklin X-40 indoor.</p></div>
-    <div class="card"><h3>Are spectators welcome?</h3><p>Absolutely — grab a drink at Dilly's Oasis and cheer. Free entry for spectators.</p></div>
-  </section>
-</main>
-
-<footer>
-  <p><strong>Pickle Yard Mauldin</strong> · 15 Jenkins Court, Mauldin, SC 29662</p>
-  <p>Questions? <a href="mailto:info@thepickleyard.com">info@thepickleyard.com</a> · (864) 380-8907</p>
-  <p style="margin-top:1rem; opacity:0.5;">© 2026 Pickle Yard. Moneyball Throwdown.</p>
+<footer style="background:var(--ink2); border-top:3px solid var(--green); padding:1.75rem; text-align:center; color:rgba(255,255,255,.55); font-size:.88rem;">
+  <p><strong style="color:var(--white);">Pickle Yard Mauldin</strong> · 15 Jenkins Court, Mauldin, SC 29662</p>
+  <p style="margin-top:.4rem;"><a href="mailto:info@thepickleyard.com" style="color:var(--gold); text-decoration:none;">info@thepickleyard.com</a> · (864) 380-8907</p>
+  <p style="margin-top:1rem; opacity:.4;">© 2026 Pickle Yard · Moneyball Throwdown</p>
 </footer>
 
 <script>
-  // ============================================================
-  //  REGISTRATION + ADMIN — fully local, no external services
-  //  All data lives in localStorage under 'py-registrations'
-  // ============================================================
+// ============================================================
+//  DATA / CONSTANTS
+// ============================================================
+const ADMIN_PIN = '1987';
+const STORAGE_KEY = 'py-registrations';
+const TEAM_CAP = 12;
+const EVENT_DATE = new Date('2026-05-16T13:00:00');
 
-  const ADMIN_PIN   = '1987';        // change in source for production
-  const STORAGE_KEY = 'py-registrations';
-  const TEAM_CAP    = 12;
+const TEST_SEED = [
+  {teamName:"Dinks on a Plane",  p1Name:"Rahul Syed",   p1Dupr:"4.00",p1Email:"rahul@example.com",  p1Phone:"864-555-0101",p2Name:"Arjun Patel",    p2Dupr:"3.95",p2Email:"arjun@example.com",  p2Phone:"864-555-0102",shirts:"M/L",notes:""},
+  {teamName:"Kitchen Cartel",    p1Name:"Marcus Lee",   p1Dupr:"3.85",p1Email:"marcus@example.com", p1Phone:"864-555-0103",p2Name:"Sam Rivera",     p2Dupr:"3.80",p2Email:"sam@example.com",    p2Phone:"864-555-0104",shirts:"L/XL",notes:""},
+  {teamName:"Spin Cycle",        p1Name:"Jenna Brooks", p1Dupr:"3.95",p1Email:"jenna@example.com",  p1Phone:"864-555-0105",p2Name:"Priya Shah",     p2Dupr:"3.90",p2Email:"priya@example.com",  p2Phone:"864-555-0106",shirts:"S/M",notes:"Right knee."},
+  {teamName:"Third Shot Dreams", p1Name:"Chris Tanner", p1Dupr:"3.75",p1Email:"chris@example.com",  p1Phone:"864-555-0107",p2Name:"Evan Cho",       p2Dupr:"3.75",p2Email:"evan@example.com",   p2Phone:"864-555-0108",shirts:"L/L",notes:""},
+  {teamName:"Net Positive",      p1Name:"Dana Kim",     p1Dupr:"4.10",p1Email:"dana@example.com",   p1Phone:"864-555-0109",p2Name:"Lauren Holt",   p2Dupr:"4.00",p2Email:"lauren@example.com", p2Phone:"864-555-0110",shirts:"M/M",notes:""},
+  {teamName:"Ernie's Nephews",   p1Name:"Tyler Boone",  p1Dupr:"3.80",p1Email:"tyler@example.com",  p1Phone:"864-555-0111",p2Name:"Nikhil Raman",  p2Dupr:"3.75",p2Email:"nik@example.com",    p2Phone:"864-555-0112",shirts:"XL/L",notes:""},
+  {teamName:"Bangers & Dinks",   p1Name:"Alex Morgan",  p1Dupr:"4.05",p1Email:"alex@example.com",   p1Phone:"864-555-0113",p2Name:"Dre Washington",p2Dupr:"4.00",p2Email:"dre@example.com",    p2Phone:"864-555-0114",shirts:"L/XL",notes:""},
+  {teamName:"Paddle Mafia",      p1Name:"Bryan Nguyen", p1Dupr:"3.90",p1Email:"bryan@example.com",  p1Phone:"864-555-0115",p2Name:"Carla Diaz",    p2Dupr:"3.85",p2Email:"carla@example.com",  p2Phone:"864-555-0116",shirts:"M/S",notes:""},
+  {teamName:"Moneyballers",      p1Name:"Jordan Park",  p1Dupr:"4.15",p1Email:"jordan@example.com", p1Phone:"864-555-0117",p2Name:"Lila Fields",   p2Dupr:"4.10",p2Email:"lila@example.com",   p2Phone:"864-555-0118",shirts:"L/M",notes:"Vegetarian."},
+  {teamName:"The Pickle Yardies",p1Name:"Nate Burris",  p1Dupr:"3.85",p1Email:"nate@example.com",   p1Phone:"864-555-0119",p2Name:"Sofi Stephens", p2Dupr:"3.80",p2Email:"sofi@example.com",   p2Phone:"864-555-0120",shirts:"M/S",notes:""},
+  {teamName:"Volley Llamas",     p1Name:"Marco Ruiz",   p1Dupr:"3.70",p1Email:"marco@example.com",  p1Phone:"864-555-0121",p2Name:"Kim Truong",    p2Dupr:"3.70",p2Email:"kim@example.com",    p2Phone:"864-555-0122",shirts:"L/S",notes:""},
+  {teamName:"ATP Freaks",        p1Name:"Devon Hale",   p1Dupr:"4.00",p1Email:"devon@example.com",  p1Phone:"864-555-0123",p2Name:"Trey Jackson",  p2Dupr:"3.95",p2Email:"trey@example.com",   p2Phone:"864-555-0124",shirts:"XL/XL",notes:""}
+];
 
-  // ---------- TAB NAV ----------
-  document.querySelectorAll('nav.nav-tabs button').forEach(b => {
-    b.addEventListener('click', () => showTab(b.dataset.tab));
+// ============================================================
+//  STORAGE
+// ============================================================
+const loadRegs = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')||[]; } catch(e){return[];} };
+const saveRegs = a => localStorage.setItem(STORAGE_KEY, JSON.stringify(a));
+
+function autoPool(regs) {
+  const a = regs.filter(r=>r.pool==='A').length;
+  const b = regs.filter(r=>r.pool==='B').length;
+  return a <= b && a < 6 ? 'A' : 'B';
+}
+
+// ============================================================
+//  TAB NAV
+// ============================================================
+document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+function showTab(id) {
+  document.querySelectorAll('nav.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab===id));
+  document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id===id));
+  window.scrollTo({top:0, behavior:'smooth'});
+  if (id==='admin' && isUnlocked()) renderAdmin();
+  if (id==='teams') renderTeams();
+}
+
+// ============================================================
+//  CAP BAR + SLOT COUNTER
+// ============================================================
+function updateCapUI() {
+  const n = loadRegs().length;
+  const pct = (n/TEAM_CAP*100).toFixed(0)+'%';
+  const left = Math.max(0, TEAM_CAP-n);
+  ['pub-cap-fill','reg-cap-fill','sb-cap-fill'].forEach(id=>{const el=document.getElementById(id); if(el) el.style.width=pct;});
+  const lb = `${n} of ${TEAM_CAP} spots filled`;
+  ['pub-cap-label','reg-cap-label'].forEach(id=>{const el=document.getElementById(id); if(el) el.textContent=lb;});
+  const sb = document.getElementById('sb-slots'); if(sb) sb.textContent=left;
+}
+
+// ============================================================
+//  TEAMS (PUBLIC)
+// ============================================================
+function renderTeams() {
+  const regs = loadRegs();
+  const a = document.getElementById('teams-a'), b = document.getElementById('teams-b');
+  a.innerHTML=''; b.innerHTML='';
+  if (!regs.length) {
+    a.innerHTML='<p style="color:rgba(255,255,255,.5); padding:.5rem;">No teams yet — be first!</p>';
+    return;
+  }
+  regs.forEach(t => {
+    const seed = regs.filter(x=>x.pool===t.pool).indexOf(t)+1;
+    const el = document.createElement('div');
+    el.className = `team-card pool-${t.pool}`;
+    el.innerHTML = `<div class="team-num">${t.pool}${seed}</div><div><div class="team-name">${esc(t.teamName)}</div><div class="team-players">${esc(t.p1Name)} · ${esc(t.p2Name)}</div></div>`;
+    (t.pool==='A'?a:b).appendChild(el);
   });
-  function showTab(id) {
-    document.querySelectorAll('nav.nav-tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
-    document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === id));
-    window.scrollTo({top: 0, behavior:'smooth'});
-    if (id === 'admin' && isUnlocked()) renderAdmin();
-  }
+  updateCapUI();
+}
 
-  // ---------- SEED TEST DATA (only shown if no registrations yet) ----------
-  const TEST_SEED = [
-    { teamName:"Dinks on a Plane",  p1Name:"Rahul Syed",   p1Dupr:"4.00", p1Email:"rahul@example.com",  p1Phone:"864-555-0101",
-      p2Name:"Arjun Patel",         p2Dupr:"3.95", p2Email:"arjun@example.com",  p2Phone:"864-555-0102", shirts:"M / L", notes:"" },
-    { teamName:"Kitchen Cartel",    p1Name:"Marcus Lee",   p1Dupr:"3.85", p1Email:"marcus@example.com", p1Phone:"864-555-0103",
-      p2Name:"Sam Rivera",          p2Dupr:"3.80", p2Email:"sam@example.com",    p2Phone:"864-555-0104", shirts:"L / XL", notes:"" },
-    { teamName:"Spin Cycle",        p1Name:"Jenna Brooks", p1Dupr:"3.95", p1Email:"jenna@example.com",  p1Phone:"864-555-0105",
-      p2Name:"Priya Shah",          p2Dupr:"3.90", p2Email:"priya@example.com",  p2Phone:"864-555-0106", shirts:"S / M", notes:"Right knee — may rotate." },
-    { teamName:"Third Shot Dreams", p1Name:"Chris Tanner", p1Dupr:"3.75", p1Email:"chris@example.com",  p1Phone:"864-555-0107",
-      p2Name:"Evan Cho",            p2Dupr:"3.75", p2Email:"evan@example.com",   p2Phone:"864-555-0108", shirts:"L / L", notes:"" },
-    { teamName:"Net Positive",      p1Name:"Dana Kim",     p1Dupr:"4.10", p1Email:"dana@example.com",   p1Phone:"864-555-0109",
-      p2Name:"Lauren Holt",         p2Dupr:"4.00", p2Email:"lauren@example.com", p2Phone:"864-555-0110", shirts:"M / M", notes:"" },
-    { teamName:"Ernie's Nephews",   p1Name:"Tyler Boone",  p1Dupr:"3.80", p1Email:"tyler@example.com",  p1Phone:"864-555-0111",
-      p2Name:"Nikhil Raman",        p2Dupr:"3.75", p2Email:"nik@example.com",    p2Phone:"864-555-0112", shirts:"XL / L", notes:"" },
-    { teamName:"Bangers & Dinks",   p1Name:"Alex Morgan",  p1Dupr:"4.05", p1Email:"alex@example.com",   p1Phone:"864-555-0113",
-      p2Name:"Dre Washington",      p2Dupr:"4.00", p2Email:"dre@example.com",    p2Phone:"864-555-0114", shirts:"L / XL", notes:"" },
-    { teamName:"Paddle Mafia",      p1Name:"Bryan Nguyen", p1Dupr:"3.90", p1Email:"bryan@example.com",  p1Phone:"864-555-0115",
-      p2Name:"Carla Diaz",          p2Dupr:"3.85", p2Email:"carla@example.com",  p2Phone:"864-555-0116", shirts:"M / S", notes:"" },
-    { teamName:"Moneyballers",      p1Name:"Jordan Park",  p1Dupr:"4.15", p1Email:"jordan@example.com", p1Phone:"864-555-0117",
-      p2Name:"Lila Fields",         p2Dupr:"4.10", p2Email:"lila@example.com",   p2Phone:"864-555-0118", shirts:"L / M", notes:"Vegetarian meal please." },
-    { teamName:"The Pickle Yardies",p1Name:"Nate Burris",  p1Dupr:"3.85", p1Email:"nate@example.com",   p1Phone:"864-555-0119",
-      p2Name:"Sofi Stephens",       p2Dupr:"3.80", p2Email:"sofi@example.com",   p2Phone:"864-555-0120", shirts:"M / S", notes:"" },
-    { teamName:"Volley Llamas",     p1Name:"Marco Ruiz",   p1Dupr:"3.70", p1Email:"marco@example.com",  p1Phone:"864-555-0121",
-      p2Name:"Kim Truong",          p2Dupr:"3.70", p2Email:"kim@example.com",    p2Phone:"864-555-0122", shirts:"L / S", notes:"" },
-    { teamName:"ATP Freaks",        p1Name:"Devon Hale",   p1Dupr:"4.00", p1Email:"devon@example.com",  p1Phone:"864-555-0123",
-      p2Name:"Trey Jackson",        p2Dupr:"3.95", p2Email:"trey@example.com",   p2Phone:"864-555-0124", shirts:"XL / XL", notes:"" }
-  ];
-
-  // ---------- STORAGE ----------
-  function loadRegistrations() {
-    try {
-      const arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-      return Array.isArray(arr) ? arr : [];
-    } catch(e) { return []; }
-  }
-  function saveRegistrations(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
-
-  // ---------- ASSIGN POOL ----------
-  // Registration order: teams 1-6 → Pool A, teams 7-12 → Pool B.
-  // Admin can override pool via dropdown in admin table.
-  function autoAssignPool(existing) {
-    const a = existing.filter(t => t.pool === 'A').length;
-    const b = existing.filter(t => t.pool === 'B').length;
-    if (a < 6) return 'A';
-    if (b < 6) return 'B';
-    return 'A'; // cap overflow — admin can rebalance
-  }
-
-  // ---------- PUBLIC TEAMS VIEW ----------
-  function renderTeams() {
-    const regs = loadRegistrations();
-    const poolA = document.getElementById('teams-pool-a');
-    const poolB = document.getElementById('teams-pool-b');
-    poolA.innerHTML = ''; poolB.innerHTML = '';
-    if (!regs.length) {
-      poolA.innerHTML = '<p style="color:rgba(255,255,255,0.5); padding:1rem;">No teams registered yet. Be the first!</p>';
-      return;
-    }
-    regs.forEach(t => {
-      const el = document.createElement('div');
-      el.className = 'team-card team-pool-' + t.pool;
-      const seed = regs.filter(x => x.pool === t.pool).indexOf(t) + 1;
-      const dupr = t.p1Dupr || t.p2Dupr || '';
-      el.innerHTML = `
-        <div class="team-num">${t.pool}${seed}</div>
-        <div>
-          <div class="team-name">${escapeHtml(t.teamName)}</div>
-          <div class="team-players">${escapeHtml(t.p1Name)} · ${escapeHtml(t.p2Name)}${dupr ? ' · '+escapeHtml(dupr)+' DUPR' : ''}</div>
-        </div>`;
-      (t.pool === 'A' ? poolA : poolB).appendChild(el);
-    });
-  }
-
-  // ---------- REGISTER ----------
-  function handleRegister(e) {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.target).entries());
-    const regs = loadRegistrations();
-    if (regs.length >= TEAM_CAP) {
-      alert(`Sorry — registration is full (${TEAM_CAP} teams). Email info@thepickleyard.com for the waitlist.`);
-      return;
-    }
-    const newTeam = {
-      id: 'T' + Date.now().toString(36).toUpperCase(),
-      pool: autoAssignPool(regs),
-      teamName: data.teamName.trim(),
-      p1Name: data.p1Name.trim(),   p1Dupr: (data.p1Dupr||'').trim(),
-      p1Email: data.p1Email.trim(), p1Phone: data.p1Phone.trim(),
-      p2Name: data.p2Name.trim(),   p2Dupr: (data.p2Dupr||'').trim(),
-      p2Email: data.p2Email.trim(), p2Phone: data.p2Phone.trim(),
-      shirts: (data.shirts||'').trim(),
-      notes:  (data.notes||'').trim(),
-      paid: false,
-      registeredAt: new Date().toISOString()
-    };
-    regs.push(newTeam);
-    saveRegistrations(regs);
-    e.target.reset();
-    alert(`Thanks ${newTeam.p1Name} — "${newTeam.teamName}" registered!\n\nPool ${newTeam.pool}  ·  Team #${regs.length} of ${TEAM_CAP}.\n\nPickle Yard staff will confirm payment on arrival.`);
-    showTab('teams');
-    renderTeams();
-  }
-
-  // ============================================================
-  //  ADMIN PORTAL
-  // ============================================================
-  function isUnlocked() { return sessionStorage.getItem('py-admin-unlocked') === '1'; }
-  function adminLogin(e) {
-    e.preventDefault();
-    const pin = document.getElementById('admin-pin').value;
-    if (pin === ADMIN_PIN) {
-      sessionStorage.setItem('py-admin-unlocked', '1');
-      document.getElementById('admin-login').style.display = 'none';
-      document.getElementById('admin-dashboard').style.display = 'block';
-      renderAdmin();
-    } else {
-      alert('Incorrect PIN.');
-    }
-  }
-  function adminLogout() {
-    sessionStorage.removeItem('py-admin-unlocked');
-    document.getElementById('admin-login').style.display = 'block';
-    document.getElementById('admin-dashboard').style.display = 'none';
-    document.getElementById('admin-pin').value = '';
-  }
-
-  function renderAdmin() {
-    const regs = loadRegistrations();
-    document.getElementById('stat-total').textContent = regs.length;
-    document.getElementById('stat-slots').textContent = Math.max(0, TEAM_CAP - regs.length);
-    document.getElementById('stat-paid').textContent   = regs.filter(r => r.paid).length;
-    document.getElementById('stat-unpaid').textContent = regs.filter(r => !r.paid).length;
-    document.getElementById('stat-poolA').textContent  = regs.filter(r => r.pool === 'A').length;
-    document.getElementById('stat-poolB').textContent  = regs.filter(r => r.pool === 'B').length;
-
-    const tbody = document.getElementById('admin-tbody');
-    if (!regs.length) {
-      tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; padding:2rem; color:rgba(255,255,255,0.5);">No registrations yet. Use <em>Seed 12 test teams</em> to preview.</td></tr>`;
-      return;
-    }
-    tbody.innerHTML = regs.map(r => `
-      <tr>
-        <td>
-          <select onchange="changePool('${r.id}', this.value)">
-            <option value="A" ${r.pool==='A'?'selected':''}>A</option>
-            <option value="B" ${r.pool==='B'?'selected':''}>B</option>
-          </select>
-        </td>
-        <td><strong>${escapeHtml(r.teamName)}</strong></td>
-        <td>${escapeHtml(r.p1Name)}${r.p1Dupr?` <small style="color:rgba(255,255,255,0.5);">(${escapeHtml(r.p1Dupr)})</small>`:''}</td>
-        <td>${escapeHtml(r.p2Name)}${r.p2Dupr?` <small style="color:rgba(255,255,255,0.5);">(${escapeHtml(r.p2Dupr)})</small>`:''}</td>
-        <td style="font-size:0.78rem;">${escapeHtml(r.p1Email)}<br>${escapeHtml(r.p2Email)}</td>
-        <td style="font-size:0.78rem;">${escapeHtml(r.p1Phone)}<br>${escapeHtml(r.p2Phone)}</td>
-        <td>${escapeHtml((r.p1Dupr||'')+(r.p2Dupr?' / '+r.p2Dupr:''))}</td>
-        <td>${escapeHtml(r.shirts||'—')}</td>
-        <td style="font-size:0.78rem; max-width:180px;">${escapeHtml(r.notes||'')}</td>
-        <td style="font-size:0.78rem; white-space:nowrap;">${formatDate(r.registeredAt)}</td>
-        <td><span class="paid-pill ${r.paid?'yes':'no'}" onclick="togglePaid('${r.id}')">${r.paid?'Paid':'Unpaid'}</span></td>
-        <td><button class="mini-btn danger" onclick="deleteTeam('${r.id}')">Delete</button></td>
-      </tr>
-    `).join('');
-  }
-
-  function changePool(id, newPool) {
-    const regs = loadRegistrations();
-    const t = regs.find(r => r.id === id);
-    if (t) { t.pool = newPool; saveRegistrations(regs); renderAdmin(); renderTeams(); }
-  }
-  function togglePaid(id) {
-    const regs = loadRegistrations();
-    const t = regs.find(r => r.id === id);
-    if (t) { t.paid = !t.paid; saveRegistrations(regs); renderAdmin(); }
-  }
-  function deleteTeam(id) {
-    const regs = loadRegistrations();
-    const t = regs.find(r => r.id === id);
-    if (!t) return;
-    if (!confirm(`Delete "${t.teamName}"? This cannot be undone.`)) return;
-    saveRegistrations(regs.filter(r => r.id !== id));
-    renderAdmin(); renderTeams();
-  }
-  function clearAllTeams() {
-    if (!confirm('Delete ALL registrations? This cannot be undone.')) return;
-    saveRegistrations([]);
-    renderAdmin(); renderTeams();
-  }
-  function seedTestTeams() {
-    if (loadRegistrations().length) {
-      if (!confirm('Existing registrations will be replaced with 12 test teams. Continue?')) return;
-    }
-    const seeded = TEST_SEED.map((t, i) => ({
-      ...t,
-      id: 'T' + (Date.now() + i).toString(36).toUpperCase(),
-      pool: i < 6 ? 'A' : 'B',
-      paid: i < 8,   // first 8 paid, last 4 unpaid — realistic mid-event state
-      registeredAt: new Date(Date.now() - (12 - i) * 86400000).toISOString()
-    }));
-    saveRegistrations(seeded);
-    renderAdmin(); renderTeams();
-  }
-
-  // ---------- EXPORT ----------
-  function exportCSV() {
-    const regs = loadRegistrations();
-    if (!regs.length) return alert('No registrations to export.');
-    const cols = ['id','pool','teamName','p1Name','p1Dupr','p1Email','p1Phone','p2Name','p2Dupr','p2Email','p2Phone','shirts','notes','paid','registeredAt'];
-    const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
-    const rows = [cols.join(',')].concat(regs.map(r => cols.map(c => esc(r[c])).join(',')));
-    downloadFile('pickle-yard-registrations.csv', rows.join('\n'), 'text/csv');
-  }
-  function exportJSON() {
-    const regs = loadRegistrations();
-    if (!regs.length) return alert('No registrations to export.');
-    downloadFile('pickle-yard-registrations.json', JSON.stringify(regs, null, 2), 'application/json');
-  }
-  function downloadFile(name, content, mime) {
-    const blob = new Blob([content], {type: mime});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = name; a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  // ---------- HELPERS ----------
-  function escapeHtml(s) {
-    return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  }
-  function formatDate(iso) {
-    try { const d = new Date(iso); return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
-    catch(e) { return ''; }
-  }
-
-  // ---------- BOOT ----------
-  if (isUnlocked()) {
-    document.getElementById('admin-login').style.display = 'none';
-    document.getElementById('admin-dashboard').style.display = 'block';
-  }
+// ============================================================
+//  REGISTRATION
+// ============================================================
+function handleRegister(e) {
+  e.preventDefault();
+  const d = Object.fromEntries(new FormData(e.target).entries());
+  const regs = loadRegs();
+  if (regs.length >= TEAM_CAP) { alert(`Sorry — all ${TEAM_CAP} spots are filled. Email info@thepickleyard.com for the waitlist.`); return; }
+  const team = {
+    id: 'T'+Date.now().toString(36).toUpperCase(),
+    pool: autoPool(regs),
+    teamName: d.teamName.trim(),
+    p1Name:d.p1Name.trim(), p1Dupr:(d.p1Dupr||'').trim(), p1Email:d.p1Email.trim(), p1Phone:d.p1Phone.trim(),
+    p2Name:d.p2Name.trim(), p2Dupr:(d.p2Dupr||'').trim(), p2Email:d.p2Email.trim(), p2Phone:d.p2Phone.trim(),
+    shirts:(d.shirts||'').trim(), notes:(d.notes||'').trim(),
+    paid:false, registeredAt:new Date().toISOString()
+  };
+  regs.push(team);
+  saveRegs(regs);
+  e.target.reset();
+  updateCapUI();
+  alert(`✅ "${team.teamName}" is in!\n\nPool ${team.pool} · Team #${regs.length} of ${TEAM_CAP}.\nPay $60 at check-in on May 16th.`);
+  showTab('teams');
   renderTeams();
+}
+
+// ============================================================
+//  ADMIN
+// ============================================================
+const isUnlocked = () => sessionStorage.getItem('py-admin')===ADMIN_PIN;
+function adminLogin(e) {
+  e.preventDefault();
+  if (document.getElementById('admin-pin').value===ADMIN_PIN) {
+    sessionStorage.setItem('py-admin',ADMIN_PIN);
+    document.getElementById('admin-login-wrap').style.display='none';
+    document.getElementById('admin-dashboard').style.display='block';
+    renderAdmin();
+  } else { alert('Incorrect PIN.'); }
+}
+function adminLogout() {
+  sessionStorage.removeItem('py-admin');
+  document.getElementById('admin-login-wrap').style.display='block';
+  document.getElementById('admin-dashboard').style.display='none';
+  document.getElementById('admin-pin').value='';
+}
+function renderAdmin() {
+  const regs = loadRegs();
+  document.getElementById('s-total').textContent  = regs.length;
+  document.getElementById('s-slots').textContent  = Math.max(0,TEAM_CAP-regs.length);
+  document.getElementById('s-paid').textContent   = regs.filter(r=>r.paid).length;
+  document.getElementById('s-unpaid').textContent = regs.filter(r=>!r.paid).length;
+  document.getElementById('s-pA').textContent     = regs.filter(r=>r.pool==='A').length;
+  document.getElementById('s-pB').textContent     = regs.filter(r=>r.pool==='B').length;
+  const tbody = document.getElementById('admin-tbody');
+  if (!regs.length) { tbody.innerHTML=`<tr><td colspan="12" style="text-align:center;padding:2rem;color:rgba(255,255,255,.4);">No registrations. Use "Seed 12 test teams" to preview.</td></tr>`; return; }
+  tbody.innerHTML = regs.map(r=>`
+    <tr>
+      <td><select onchange="changePool('${r.id}',this.value)"><option value="A" ${r.pool==='A'?'selected':''}>A</option><option value="B" ${r.pool==='B'?'selected':''}>B</option></select></td>
+      <td><strong>${esc(r.teamName)}</strong></td>
+      <td>${esc(r.p1Name)}${r.p1Dupr?` <small style="opacity:.5">(${esc(r.p1Dupr)})</small>`:''}</td>
+      <td>${esc(r.p2Name)}${r.p2Dupr?` <small style="opacity:.5">(${esc(r.p2Dupr)})</small>`:''}</td>
+      <td style="font-size:.76rem">${esc(r.p1Email)}<br>${esc(r.p2Email)}</td>
+      <td style="font-size:.76rem">${esc(r.p1Phone)}<br>${esc(r.p2Phone)}</td>
+      <td style="font-size:.78rem">${esc((r.p1Dupr||'')+(r.p2Dupr?' / '+r.p2Dupr:''))}</td>
+      <td>${esc(r.shirts||'—')}</td>
+      <td style="font-size:.76rem;max-width:140px;">${esc(r.notes||'')}</td>
+      <td style="font-size:.74rem;white-space:nowrap;">${fmtDate(r.registeredAt)}</td>
+      <td><span class="paid-pill ${r.paid?'yes':'no'}" onclick="togglePaid('${r.id}')">${r.paid?'Paid':'Unpaid'}</span></td>
+      <td><button class="mini-btn danger" onclick="deleteTeam('${r.id}')">Del</button></td>
+    </tr>`).join('');
+}
+function changePool(id,v){const r=loadRegs(),t=r.find(x=>x.id===id);if(t){t.pool=v;saveRegs(r);renderAdmin();renderTeams();}}
+function togglePaid(id){const r=loadRegs(),t=r.find(x=>x.id===id);if(t){t.paid=!t.paid;saveRegs(r);renderAdmin();}}
+function deleteTeam(id){const r=loadRegs(),t=r.find(x=>x.id===id);if(!t)return;if(!confirm(`Delete "${t.teamName}"?`))return;saveRegs(r.filter(x=>x.id!==id));renderAdmin();renderTeams();}
+function clearAllTeams(){if(!confirm('Delete ALL registrations?'))return;saveRegs([]);renderAdmin();renderTeams();}
+function seedTestTeams(){
+  if(loadRegs().length&&!confirm('Replace existing registrations with 12 test teams?'))return;
+  saveRegs(TEST_SEED.map((t,i)=>({...t,id:'T'+(Date.now()+i).toString(36).toUpperCase(),pool:i<6?'A':'B',paid:i<8,registeredAt:new Date(Date.now()-(12-i)*86400000).toISOString()})));
+  renderAdmin();renderTeams();updateCapUI();
+}
+function exportCSV(){
+  const regs=loadRegs();if(!regs.length)return alert('No data.');
+  const cols=['id','pool','teamName','p1Name','p1Dupr','p1Email','p1Phone','p2Name','p2Dupr','p2Email','p2Phone','shirts','notes','paid','registeredAt'];
+  const q=v=>`"${String(v??'').replace(/"/g,'""')}"`;
+  dl('py-registrations.csv',[cols.join(','),...regs.map(r=>cols.map(c=>q(r[c])).join(','))].join('\n'),'text/csv');
+}
+function exportJSON(){const regs=loadRegs();if(!regs.length)return alert('No data.');dl('py-registrations.json',JSON.stringify(regs,null,2),'application/json');}
+function dl(name,content,mime){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:mime}));a.download=name;a.click();}
+
+// ============================================================
+//  FAQ ACCORDION
+// ============================================================
+function toggleFaq(el){el.parentElement.classList.toggle('open');}
+
+// ============================================================
+//  COUNTDOWN
+// ============================================================
+function updateCountdown(){
+  const diff=EVENT_DATE-new Date();
+  if(diff<=0){['cd-d','cd-h','cd-m','cd-s'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='0';});return;}
+  const d=Math.floor(diff/864e5), h=Math.floor((diff%864e5)/36e5), m=Math.floor((diff%36e5)/6e4), s=Math.floor((diff%6e4)/1e3);
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=String(v).padStart(2,'0');};
+  set('cd-d',d); set('cd-h',h); set('cd-m',m); set('cd-s',s);
+}
+setInterval(updateCountdown,1000); updateCountdown();
+
+// ============================================================
+//  HELPERS
+// ============================================================
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function fmtDate(iso){try{const d=new Date(iso);return d.toLocaleDateString()+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
+
+// ============================================================
+//  BOOT
+// ============================================================
+if(isUnlocked()){
+  document.getElementById('admin-login-wrap').style.display='none';
+  document.getElementById('admin-dashboard').style.display='block';
+}
+updateCapUI();
+renderTeams();
 </script>
 </body>
 </html>

@@ -483,7 +483,7 @@
 const SUPABASE_URL = 'https://bgerctxljwthsjrevgdz.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJnZXJjdHhsand0aHNqcmV2Z2R6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4NTM3MzEsImV4cCI6MjA5MzQyOTczMX0.i6Ko-H96R0pdf0Vgxtov5hBPKNEAx3KIMWZSJ0uK6P8';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ============================================================
 //  CONSTANTS
@@ -535,7 +535,7 @@ async function init() {
 //  DATA LOADING
 // ============================================================
 async function loadTeams() {
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from('tournament_teams')
     .select('*')
     .order('pool', { ascending: true })
@@ -546,7 +546,7 @@ async function loadTeams() {
 }
 
 async function loadMatches() {
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from('tournament_matches')
     .select('*')
     .order('created_at', { ascending: true });
@@ -559,7 +559,7 @@ async function loadMatches() {
 //  REALTIME SUBSCRIPTIONS
 // ============================================================
 function setupRealtime() {
-  supabase
+  sb
     .channel('tournament-changes')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'tournament_teams' }, (payload) => {
       handleTeamChange(payload);
@@ -631,7 +631,7 @@ async function addTeam(e) {
     paid: false
   };
 
-  const { error } = await supabase.from('tournament_teams').insert(teamData);
+  const { error } = await sb.from('tournament_teams').insert(teamData);
   if (error) {
     alert('Error adding team: ' + error.message);
     return;
@@ -643,14 +643,14 @@ async function addTeam(e) {
 
 async function deleteTeam(id) {
   if (!confirm(`Delete team "${teams.find(t=>t.id===id)?.name}"?`)) return;
-  const { error } = await supabase.from('tournament_teams').delete().eq('id', id);
+  const { error } = await sb.from('tournament_teams').delete().eq('id', id);
   if (error) alert('Error: ' + error.message);
 }
 
 async function togglePaid(id) {
   const team = teams.find(t => t.id === id);
   if (!team) return;
-  const { error } = await supabase.from('tournament_teams').update({ paid: !team.paid }).eq('id', id);
+  const { error } = await sb.from('tournament_teams').update({ paid: !team.paid }).eq('id', id);
   if (error) alert('Error: ' + error.message);
 }
 
@@ -668,7 +668,7 @@ async function generateMatches() {
 
   if (matches.length > 0) {
     if (!confirm('This will replace all existing matches. Continue?')) return;
-    await supabase.from('tournament_matches').delete().neq('id', '');
+    await sb.from('tournament_matches').delete().neq('id', '');
   }
 
   const newMatches = [];
@@ -702,7 +702,7 @@ async function generateMatches() {
   newMatches.push({ id:'3P', phase:'playoff', pool:null, round:'3P', court:2, home_team_id:null, away_team_id:null, home_score:null, away_score:null, label:'3rd Place' });
   newMatches.push({ id:'F', phase:'playoff', pool:null, round:'F', court:1, home_team_id:null, away_team_id:null, home_score:null, away_score:null, label:'Final' });
 
-  const { error } = await supabase.from('tournament_matches').insert(newMatches);
+  const { error } = await sb.from('tournament_matches').insert(newMatches);
   if (error) {
     alert('Error generating matches: ' + error.message);
     return;
@@ -717,7 +717,7 @@ async function updateScore(matchId, side, value) {
   const score = value === '' ? null : Number(value);
   const update = side === 'home' ? { home_score: score } : { away_score: score };
 
-  const { error } = await supabase.from('tournament_matches').update(update).eq('id', matchId);
+  const { error } = await sb.from('tournament_matches').update(update).eq('id', matchId);
   if (error) console.error('Score update error:', error);
 
   // After updating pool play scores, check if we should wire playoffs
@@ -763,7 +763,7 @@ async function wirePlayoffs() {
   updates.push({ id:'F', home_team_id: winnerOf(sf1), away_team_id: winnerOf(sf2) });
 
   for (const u of updates) {
-    await supabase.from('tournament_matches').update({ home_team_id: u.home_team_id, away_team_id: u.away_team_id }).eq('id', u.id);
+    await sb.from('tournament_matches').update({ home_team_id: u.home_team_id, away_team_id: u.away_team_id }).eq('id', u.id);
   }
 }
 
@@ -1039,8 +1039,8 @@ function adminLogout() {
 // ============================================================
 async function clearAllData() {
   if (!confirm('Delete ALL teams and matches? This cannot be undone.')) return;
-  await supabase.from('tournament_matches').delete().neq('id', '');
-  await supabase.from('tournament_teams').delete().neq('id', '');
+  await sb.from('tournament_matches').delete().neq('id', '');
+  await sb.from('tournament_teams').delete().neq('id', '');
   teams = [];
   matches = [];
   renderAll();

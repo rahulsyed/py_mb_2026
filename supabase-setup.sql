@@ -1,10 +1,18 @@
 -- ============================================================
 -- PICKLE YARD MONEYBALL THROWDOWN — Supabase Schema
 -- Run this in your Supabase SQL Editor (Dashboard > SQL Editor)
+--
+-- IMPORTANT: This will DROP and recreate tables.
+-- If you have existing data you want to keep, back it up first.
 -- ============================================================
 
+-- Drop existing tables (order matters due to foreign keys)
+DROP TABLE IF EXISTS tournament_matches CASCADE;
+DROP TABLE IF EXISTS tournament_teams CASCADE;
+DROP TABLE IF EXISTS tournament_settings CASCADE;
+
 -- Teams table
-CREATE TABLE IF NOT EXISTS tournament_teams (
+CREATE TABLE tournament_teams (
   id TEXT PRIMARY KEY,
   pool TEXT NOT NULL CHECK (pool IN ('A', 'B')),
   name TEXT NOT NULL,
@@ -22,7 +30,7 @@ CREATE TABLE IF NOT EXISTS tournament_teams (
 );
 
 -- Matches table
-CREATE TABLE IF NOT EXISTS tournament_matches (
+CREATE TABLE tournament_matches (
   id TEXT PRIMARY KEY,
   phase TEXT NOT NULL CHECK (phase IN ('pool', 'playoff')),
   pool TEXT,
@@ -37,41 +45,35 @@ CREATE TABLE IF NOT EXISTS tournament_matches (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Tournament settings (admin PIN, event state, etc.)
-CREATE TABLE IF NOT EXISTS tournament_settings (
+-- Tournament settings
+CREATE TABLE tournament_settings (
   key TEXT PRIMARY KEY,
   value TEXT NOT NULL,
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Insert default admin PIN
-INSERT INTO tournament_settings (key, value) VALUES ('admin_pin', '1987')
-ON CONFLICT (key) DO NOTHING;
-
--- Insert event status
-INSERT INTO tournament_settings (key, value) VALUES ('event_status', 'registration')
-ON CONFLICT (key) DO NOTHING;
+-- Default settings
+INSERT INTO tournament_settings (key, value) VALUES ('admin_pin', '1987');
+INSERT INTO tournament_settings (key, value) VALUES ('event_status', 'registration');
 
 -- Enable Row Level Security
 ALTER TABLE tournament_teams ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tournament_matches ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tournament_settings ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies: Everyone can READ (public tournament data)
+-- RLS Policies: public read, anon write
 CREATE POLICY "Public read teams" ON tournament_teams FOR SELECT USING (true);
 CREATE POLICY "Public read matches" ON tournament_matches FOR SELECT USING (true);
 CREATE POLICY "Public read settings" ON tournament_settings FOR SELECT USING (key != 'admin_pin');
-
--- RLS Policies: Anon can INSERT/UPDATE/DELETE (admin uses PIN check in app)
 CREATE POLICY "Anon manage teams" ON tournament_teams FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Anon manage matches" ON tournament_matches FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Anon manage settings" ON tournament_settings FOR ALL USING (true) WITH CHECK (true);
 
--- Enable realtime for live updates
+-- Enable realtime
 ALTER PUBLICATION supabase_realtime ADD TABLE tournament_teams;
 ALTER PUBLICATION supabase_realtime ADD TABLE tournament_matches;
 
--- Function to auto-update updated_at
+-- Auto-update updated_at trigger
 CREATE OR REPLACE FUNCTION update_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -80,12 +82,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Triggers for updated_at
 CREATE TRIGGER teams_updated_at BEFORE UPDATE ON tournament_teams
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
-
 CREATE TRIGGER matches_updated_at BEFORE UPDATE ON tournament_matches
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
-
 CREATE TRIGGER settings_updated_at BEFORE UPDATE ON tournament_settings
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- Verify: list all columns
+SELECT column_name, data_type FROM information_schema.columns
+WHERE table_name = 'tournament_teams' ORDER BY ordinal_position;

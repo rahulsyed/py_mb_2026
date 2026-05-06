@@ -798,7 +798,7 @@
       <div class="admin-login">
         <h3>Enter Admin PIN</h3>
         <p style="color:var(--py-text-dim); margin-bottom:0.5rem;">Access team management and score entry.</p>
-        <input type="password" id="admin-pin" placeholder="****" maxlength="4">
+        <input type="tel" id="admin-pin" placeholder="****" maxlength="4" autocomplete="off" inputmode="numeric" style="-webkit-text-security:disc;">
         <button class="btn gold" onclick="adminLogin()" style="width:100%;">Unlock Admin</button>
       </div>
     </div>
@@ -1477,10 +1477,10 @@ function matchCardHTML(m) {
   const awayWin = done && m.away_score > m.home_score;
 
   const scoreHTML = isAdmin
-    ? `<input class="score-input" type="number" min="0" max="25" value="${m.home_score ?? ''}" data-match="${m.id}" data-side="home" data-original="${m.home_score ?? ''}">`
+    ? `<input class="score-input" type="number" autocomplete="off" min="0" max="25" value="${m.home_score ?? ''}" data-match="${m.id}" data-side="home" data-original="${m.home_score ?? ''}">`
     : `<div class="score-display">${m.home_score ?? '-'}</div>`;
   const scoreHTML2 = isAdmin
-    ? `<input class="score-input" type="number" min="0" max="25" value="${m.away_score ?? ''}" data-match="${m.id}" data-side="away" data-original="${m.away_score ?? ''}">`
+    ? `<input class="score-input" type="number" autocomplete="off" min="0" max="25" value="${m.away_score ?? ''}" data-match="${m.id}" data-side="away" data-original="${m.away_score ?? ''}">`
     : `<div class="score-display">${m.away_score ?? '-'}</div>`;
 
   return `<div class="match ${done?'completed':''}">

@@ -1483,10 +1483,7 @@ function matchCardHTML(m) {
     ? `<input class="score-input" type="number" min="0" max="25" value="${m.away_score ?? ''}" data-match="${m.id}" data-side="away" data-original="${m.away_score ?? ''}">`
     : `<div class="score-display">${m.away_score ?? '-'}</div>`;
 
-  const resetBtn = `<button class="match-reset-btn" onclick="resetMatchScore('${m.id}')">Reset</button>`;
-
   return `<div class="match ${done?'completed':''}">
-    ${resetBtn}
     <div class="match-head">
       <span>Pool ${m.pool} &middot; R${m.round}</span>
       <span class="court-badge">CT ${m.court}</span>

@@ -3,27 +3,20 @@
 -- Run this in your Supabase SQL Editor (Dashboard > SQL Editor)
 --
 -- IMPORTANT: This will DROP and recreate tables.
--- If you have existing data you want to keep, back it up first.
 -- ============================================================
 
--- Drop existing tables (order matters due to foreign keys)
+-- Drop existing tables
 DROP TABLE IF EXISTS tournament_matches CASCADE;
 DROP TABLE IF EXISTS tournament_teams CASCADE;
 DROP TABLE IF EXISTS tournament_settings CASCADE;
 
--- Teams table
+-- Teams table (simple: team name + two player names)
 CREATE TABLE tournament_teams (
   id TEXT PRIMARY KEY,
   pool TEXT NOT NULL CHECK (pool IN ('A', 'B')),
   name TEXT NOT NULL,
   p1_name TEXT NOT NULL,
   p2_name TEXT NOT NULL,
-  p1_dupr TEXT DEFAULT '',
-  p2_dupr TEXT DEFAULT '',
-  p1_email TEXT DEFAULT '',
-  p2_email TEXT DEFAULT '',
-  p1_phone TEXT DEFAULT '',
-  p2_phone TEXT DEFAULT '',
   paid BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -61,7 +54,7 @@ ALTER TABLE tournament_teams ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tournament_matches ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tournament_settings ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies: public read, anon write
+-- RLS Policies
 CREATE POLICY "Public read teams" ON tournament_teams FOR SELECT USING (true);
 CREATE POLICY "Public read matches" ON tournament_matches FOR SELECT USING (true);
 CREATE POLICY "Public read settings" ON tournament_settings FOR SELECT USING (key != 'admin_pin');
@@ -89,6 +82,6 @@ CREATE TRIGGER matches_updated_at BEFORE UPDATE ON tournament_matches
 CREATE TRIGGER settings_updated_at BEFORE UPDATE ON tournament_settings
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
--- Verify: list all columns
+-- Verify columns
 SELECT column_name, data_type FROM information_schema.columns
 WHERE table_name = 'tournament_teams' ORDER BY ordinal_position;

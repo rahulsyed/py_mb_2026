@@ -621,21 +621,26 @@
 <script>
 // ============================================================
 //  SUPABASE CONFIG
+//  Using service_role key because existing RLS policies
+//  restrict anon access. This is acceptable for an admin-
+//  PIN-protected tournament page on GitHub Pages.
 // ============================================================
 const SUPABASE_URL = 'https://bgerctxljwthsjrevgdz.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJnZXJjdHhsand0aHNqcmV2Z2R6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4NTM3MzEsImV4cCI6MjA5MzQyOTczMX0.i6Ko-H96R0pdf0Vgxtov5hBPKNEAx3KIMWZSJ0uK6P8';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJnZXJjdHhsand0aHNqcmV2Z2R6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Nzg1MzczMSwiZXhwIjoyMDkzNDI5NzMxfQ.an-yveJHTSN8EH9aK4QHbwIbYhcBPSevB8zxvEuG-DM';
 
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ============================================================
-//  CONSTANTS
+//  CONSTANTS — adapted to existing CourtPilot DB schema
+//  tournament_teams: id(uuid), tournament_id, name, seed, players(jsonb), created_at
+//  matches: id(uuid), tournament_id, round(int), team1_id, team2_id, court(text), score1, score2, status, metadata(jsonb), created_at
 // ============================================================
+const TOURNAMENT_ID = 'fbd3ed60-fb9b-4f12-8ebe-0006b86659d3';
 const ADMIN_PIN = '1987';
 const TEAM_CAP = 12;
 const POOL_COURT = { A: [1,2,3], B: [4,5,6] };
-const PLAYOFF_COURTS = { QF1:1, QF2:2, SF1:1, SF2:2, '3P':2, F:1 };
 
-// Round-robin schedule for 6 teams
+// Round-robin schedule for 6 teams (circle method)
 const RR_SCHEDULE = [
   [[0,5],[1,4],[2,3]],
   [[0,4],[5,3],[1,2]],
@@ -647,9 +652,46 @@ const RR_SCHEDULE = [
 // ============================================================
 //  STATE
 // ============================================================
-let teams = [];
-let matches = [];
+let teams = [];   // normalized: { id, name, pool, p1_name, p2_name, paid, seed, _raw }
+let matches = []; // normalized: { id, phase, pool, round, court, home_team_id, away_team_id, home_score, away_score, label, _raw }
 let isAdmin = false;
+
+// ============================================================
+//  DATA NORMALIZATION HELPERS
+//  Map between DB schema (players jsonb, team1_id, score1 etc.)
+//  and our internal flat format used by render functions.
+// ============================================================
+function normalizeTeam(row) {
+  const p = row.players || {};
+  return {
+    id: row.id,
+    name: row.name || '',
+    pool: p.pool || 'A',
+    p1_name: p.p1_name || '',
+    p2_name: p.p2_name || '',
+    paid: !!p.paid,
+    seed: row.seed,
+    _raw: row
+  };
+}
+
+function normalizeMatch(row) {
+  const md = row.metadata || {};
+  return {
+    id: row.id,
+    phase: md.phase || 'pool',
+    pool: md.pool || null,
+    round: md.round_label || String(row.round || 1),
+    court: row.court || '1',
+    home_team_id: row.team1_id,
+    away_team_id: row.team2_id,
+    home_score: row.score1,
+    away_score: row.score2,
+    label: md.label || null,
+    status: row.status || 'pending',
+    _raw: row
+  };
+}
 
 // ============================================================
 //  INIT
@@ -667,7 +709,6 @@ async function init() {
     document.getElementById('loading').classList.add('hidden');
   }
 
-  // Check URL params for view
   const params = new URLSearchParams(window.location.search);
   const view = params.get('view');
   if (view) showView(view);
@@ -680,21 +721,24 @@ async function loadTeams() {
   const { data, error } = await sb
     .from('tournament_teams')
     .select('*')
-    .order('pool', { ascending: true })
+    .eq('tournament_id', TOURNAMENT_ID)
     .order('created_at', { ascending: true });
 
   if (error) { console.error('Load teams error:', error); return; }
-  teams = data || [];
+  teams = (data || []).map(normalizeTeam);
+  // Sort by pool then creation
+  teams.sort((a,b) => a.pool.localeCompare(b.pool));
 }
 
 async function loadMatches() {
   const { data, error } = await sb
-    .from('tournament_matches')
+    .from('matches')
     .select('*')
+    .eq('tournament_id', TOURNAMENT_ID)
     .order('created_at', { ascending: true });
 
   if (error) { console.error('Load matches error:', error); return; }
-  matches = data || [];
+  matches = (data || []).map(normalizeMatch);
 }
 
 // ============================================================
@@ -702,11 +746,17 @@ async function loadMatches() {
 // ============================================================
 function setupRealtime() {
   sb
-    .channel('tournament-changes')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'tournament_teams' }, (payload) => {
+    .channel('py-tournament')
+    .on('postgres_changes', {
+      event: '*', schema: 'public', table: 'tournament_teams',
+      filter: `tournament_id=eq.${TOURNAMENT_ID}`
+    }, (payload) => {
       handleTeamChange(payload);
     })
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'tournament_matches' }, (payload) => {
+    .on('postgres_changes', {
+      event: '*', schema: 'public', table: 'matches',
+      filter: `tournament_id=eq.${TOURNAMENT_ID}`
+    }, (payload) => {
       handleMatchChange(payload);
     })
     .subscribe();
@@ -714,22 +764,23 @@ function setupRealtime() {
 
 function handleTeamChange(payload) {
   if (payload.eventType === 'INSERT') {
-    teams.push(payload.new);
+    teams.push(normalizeTeam(payload.new));
   } else if (payload.eventType === 'UPDATE') {
     const idx = teams.findIndex(t => t.id === payload.new.id);
-    if (idx >= 0) teams[idx] = payload.new;
+    if (idx >= 0) teams[idx] = normalizeTeam(payload.new);
   } else if (payload.eventType === 'DELETE') {
     teams = teams.filter(t => t.id !== payload.old.id);
   }
+  teams.sort((a,b) => a.pool.localeCompare(b.pool));
   renderAll();
 }
 
 function handleMatchChange(payload) {
   if (payload.eventType === 'INSERT') {
-    matches.push(payload.new);
+    matches.push(normalizeMatch(payload.new));
   } else if (payload.eventType === 'UPDATE') {
     const idx = matches.findIndex(m => m.id === payload.new.id);
-    if (idx >= 0) matches[idx] = payload.new;
+    if (idx >= 0) matches[idx] = normalizeMatch(payload.new);
   } else if (payload.eventType === 'DELETE') {
     matches = matches.filter(m => m.id !== payload.old.id);
   }
@@ -757,17 +808,19 @@ async function addTeam(e) {
     return;
   }
 
-  const teamId = pool + (poolTeams.length + 1);
   const teamData = {
-    id: teamId,
-    pool: pool,
+    tournament_id: TOURNAMENT_ID,
     name: fd.get('teamName').trim(),
-    p1_name: fd.get('p1Name').trim(),
-    p2_name: fd.get('p2Name').trim(),
-    paid: false
+    seed: poolTeams.length + 1,
+    players: {
+      pool: pool,
+      p1_name: fd.get('p1Name').trim(),
+      p2_name: fd.get('p2Name').trim(),
+      paid: false
+    }
   };
 
-  const { error } = await sb.from('tournament_teams').insert(teamData);
+  const { data, error } = await sb.from('tournament_teams').insert(teamData).select();
   if (error) {
     alert('Error adding team: ' + error.message);
     return;
@@ -775,19 +828,33 @@ async function addTeam(e) {
 
   e.target.reset();
   hideAddTeamForm();
+
+  // If realtime doesn't fire, add locally
+  if (data && data[0] && !teams.find(t => t.id === data[0].id)) {
+    teams.push(normalizeTeam(data[0]));
+    teams.sort((a,b) => a.pool.localeCompare(b.pool));
+    renderAll();
+  }
 }
 
 async function deleteTeam(id) {
   if (!confirm(`Delete team "${teams.find(t=>t.id===id)?.name}"?`)) return;
   const { error } = await sb.from('tournament_teams').delete().eq('id', id);
-  if (error) alert('Error: ' + error.message);
+  if (error) { alert('Error: ' + error.message); return; }
+  teams = teams.filter(t => t.id !== id);
+  renderAll();
 }
 
 async function togglePaid(id) {
   const team = teams.find(t => t.id === id);
   if (!team) return;
-  const { error } = await sb.from('tournament_teams').update({ paid: !team.paid }).eq('id', id);
-  if (error) alert('Error: ' + error.message);
+  const newPaid = !team.paid;
+  const updatedPlayers = { ...team._raw.players, paid: newPaid };
+  const { error } = await sb.from('tournament_teams').update({ players: updatedPlayers }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  team.paid = newPaid;
+  team._raw.players = updatedPlayers;
+  renderAll();
 }
 
 // ============================================================
@@ -804,45 +871,75 @@ async function generateMatches() {
 
   if (matches.length > 0) {
     if (!confirm('This will replace all existing matches. Continue?')) return;
-    await sb.from('tournament_matches').delete().neq('id', '');
+    await sb.from('matches').delete().eq('tournament_id', TOURNAMENT_ID);
   }
 
   const newMatches = [];
 
-  // Pool play
+  // Pool play matches
   ['A','B'].forEach(pool => {
     const poolTeams = teams.filter(t => t.pool === pool);
     RR_SCHEDULE.forEach((round, rIdx) => {
       round.forEach((pair, mIdx) => {
         newMatches.push({
-          id: `${pool}-R${rIdx+1}-M${mIdx+1}`,
-          phase: 'pool',
-          pool: pool,
-          round: String(rIdx + 1),
-          court: POOL_COURT[pool][mIdx],
-          home_team_id: poolTeams[pair[0]]?.id || null,
-          away_team_id: poolTeams[pair[1]]?.id || null,
-          home_score: null,
-          away_score: null,
-          label: null
+          tournament_id: TOURNAMENT_ID,
+          round: rIdx + 1,
+          court: String(POOL_COURT[pool][mIdx]),
+          team1_id: poolTeams[pair[0]]?.id || null,
+          team2_id: poolTeams[pair[1]]?.id || null,
+          score1: null,
+          score2: null,
+          status: 'pending',
+          metadata: {
+            phase: 'pool',
+            pool: pool,
+            round_label: String(rIdx + 1),
+            label: null,
+            match_key: `${pool}-R${rIdx+1}-M${mIdx+1}`
+          }
         });
       });
     });
   });
 
   // Playoff placeholders
-  newMatches.push({ id:'QF1', phase:'playoff', pool:null, round:'QF', court:1, home_team_id:null, away_team_id:null, home_score:null, away_score:null, label:'QF1: A2 vs B3' });
-  newMatches.push({ id:'QF2', phase:'playoff', pool:null, round:'QF', court:2, home_team_id:null, away_team_id:null, home_score:null, away_score:null, label:'QF2: B2 vs A3' });
-  newMatches.push({ id:'SF1', phase:'playoff', pool:null, round:'SF', court:1, home_team_id:null, away_team_id:null, home_score:null, away_score:null, label:'SF1: A1 vs QF1 Winner' });
-  newMatches.push({ id:'SF2', phase:'playoff', pool:null, round:'SF', court:2, home_team_id:null, away_team_id:null, home_score:null, away_score:null, label:'SF2: B1 vs QF2 Winner' });
-  newMatches.push({ id:'3P', phase:'playoff', pool:null, round:'3P', court:2, home_team_id:null, away_team_id:null, home_score:null, away_score:null, label:'3rd Place' });
-  newMatches.push({ id:'F', phase:'playoff', pool:null, round:'F', court:1, home_team_id:null, away_team_id:null, home_score:null, away_score:null, label:'Final' });
+  const playoffDefs = [
+    { round: 6, court: '1', label: 'QF1: A2 vs B3', match_key: 'QF1' },
+    { round: 6, court: '2', label: 'QF2: B2 vs A3', match_key: 'QF2' },
+    { round: 7, court: '1', label: 'SF1: A1 vs QF1 Winner', match_key: 'SF1' },
+    { round: 7, court: '2', label: 'SF2: B1 vs QF2 Winner', match_key: 'SF2' },
+    { round: 8, court: '2', label: '3rd Place', match_key: '3P' },
+    { round: 8, court: '1', label: 'Final', match_key: 'F' },
+  ];
+  playoffDefs.forEach(def => {
+    newMatches.push({
+      tournament_id: TOURNAMENT_ID,
+      round: def.round,
+      court: def.court,
+      team1_id: null,
+      team2_id: null,
+      score1: null,
+      score2: null,
+      status: 'pending',
+      metadata: {
+        phase: 'playoff',
+        pool: null,
+        round_label: def.match_key.startsWith('QF') ? 'QF' : def.match_key.startsWith('SF') ? 'SF' : def.match_key === '3P' ? '3P' : 'F',
+        label: def.label,
+        match_key: def.match_key
+      }
+    });
+  });
 
-  const { error } = await sb.from('tournament_matches').insert(newMatches);
+  const { error } = await sb.from('matches').insert(newMatches);
   if (error) {
     alert('Error generating matches: ' + error.message);
     return;
   }
+
+  // Reload matches
+  await loadMatches();
+  renderAll();
   alert('Matches generated successfully!');
 }
 
@@ -851,16 +948,19 @@ async function generateMatches() {
 // ============================================================
 async function updateScore(matchId, side, value) {
   const score = value === '' ? null : Number(value);
-  const update = side === 'home' ? { home_score: score } : { away_score: score };
+  const update = side === 'home' ? { score1: score } : { score2: score };
 
-  const { error } = await sb.from('tournament_matches').update(update).eq('id', matchId);
-  if (error) console.error('Score update error:', error);
+  const { error } = await sb.from('matches').update(update).eq('id', matchId);
+  if (error) { console.error('Score update error:', error); return; }
 
-  // After updating pool play scores, check if we should wire playoffs
+  // Update local state
   const match = matches.find(m => m.id === matchId);
   if (match) {
-    match[side === 'home' ? 'home_score' : 'away_score'] = score;
+    if (side === 'home') { match.home_score = score; match._raw.score1 = score; }
+    else { match.away_score = score; match._raw.score2 = score; }
   }
+  renderAll();
+
   if (poolPlayComplete()) {
     await wirePlayoffs();
   }
@@ -868,6 +968,11 @@ async function updateScore(matchId, side, value) {
 
 function poolPlayComplete() {
   return matches.filter(m => m.phase === 'pool').every(m => m.home_score != null && m.away_score != null);
+}
+
+// Helper to find match by match_key in metadata
+function findMatchByKey(key) {
+  return matches.find(m => m._raw?.metadata?.match_key === key);
 }
 
 async function wirePlayoffs() {
@@ -878,29 +983,36 @@ async function wirePlayoffs() {
   const updates = [];
 
   // QF1: A2 vs B3
-  updates.push({ id:'QF1', home_team_id: sA[1]?.team.id, away_team_id: sB[2]?.team.id });
+  const qf1 = findMatchByKey('QF1');
+  if (qf1) updates.push({ id: qf1.id, team1_id: sA[1]?.team.id, team2_id: sB[2]?.team.id });
+
   // QF2: B2 vs A3
-  updates.push({ id:'QF2', home_team_id: sB[1]?.team.id, away_team_id: sA[2]?.team.id });
+  const qf2 = findMatchByKey('QF2');
+  if (qf2) updates.push({ id: qf2.id, team1_id: sB[1]?.team.id, team2_id: sA[2]?.team.id });
 
   // SF1: A1 vs QF1 Winner
-  const qf1 = matches.find(m => m.id === 'QF1');
+  const sf1 = findMatchByKey('SF1');
   const qf1Winner = winnerOf(qf1);
-  updates.push({ id:'SF1', home_team_id: sA[0]?.team.id, away_team_id: qf1Winner });
+  if (sf1) updates.push({ id: sf1.id, team1_id: sA[0]?.team.id, team2_id: qf1Winner });
 
   // SF2: B1 vs QF2 Winner
-  const qf2 = matches.find(m => m.id === 'QF2');
+  const sf2 = findMatchByKey('SF2');
   const qf2Winner = winnerOf(qf2);
-  updates.push({ id:'SF2', home_team_id: sB[0]?.team.id, away_team_id: qf2Winner });
+  if (sf2) updates.push({ id: sf2.id, team1_id: sB[0]?.team.id, team2_id: qf2Winner });
 
-  // 3P and Final
-  const sf1 = matches.find(m => m.id === 'SF1');
-  const sf2 = matches.find(m => m.id === 'SF2');
-  updates.push({ id:'3P', home_team_id: loserOf(sf1), away_team_id: loserOf(sf2) });
-  updates.push({ id:'F', home_team_id: winnerOf(sf1), away_team_id: winnerOf(sf2) });
+  // 3rd Place and Final
+  const thirdPlace = findMatchByKey('3P');
+  const final = findMatchByKey('F');
+  if (thirdPlace) updates.push({ id: thirdPlace.id, team1_id: loserOf(sf1), team2_id: loserOf(sf2) });
+  if (final) updates.push({ id: final.id, team1_id: winnerOf(sf1), team2_id: winnerOf(sf2) });
 
   for (const u of updates) {
-    await sb.from('tournament_matches').update({ home_team_id: u.home_team_id, away_team_id: u.away_team_id }).eq('id', u.id);
+    const { id, ...data } = u;
+    await sb.from('matches').update(data).eq('id', id);
   }
+
+  await loadMatches();
+  renderAll();
 }
 
 function winnerOf(m) {
@@ -966,18 +1078,18 @@ function renderStandings() {
 
     const poolMatches = matches.filter(m => m.phase==='pool' && m.pool===p);
     const done = poolMatches.filter(m => m.home_score!=null && m.away_score!=null).length;
-    document.getElementById('pool-'+p.toLowerCase()+'-status').textContent = `${done} / ${poolMatches.length}`;
+    document.getElementById('pool-'+p.toLowerCase()+'-status').textContent = `${done} / ${poolMatches.length || 15}`;
   });
 }
 
 function renderPoolMatches() {
   const container = document.getElementById('pool-matches');
-  if (!matches.length) {
+  const poolMatches = matches.filter(m => m.phase === 'pool');
+  if (!poolMatches.length) {
     container.innerHTML = '<div class="notice">No matches generated yet. Admin must add 12 teams and generate matches.</div>';
     return;
   }
 
-  const poolMatches = matches.filter(m => m.phase === 'pool');
   const rounds = [...new Set(poolMatches.map(m => m.round))].sort();
 
   container.innerHTML = rounds.map(round => {
@@ -988,7 +1100,6 @@ function renderPoolMatches() {
     </div>`;
   }).join('');
 
-  // Add score input listeners
   container.querySelectorAll('.score-input').forEach(inp => {
     inp.addEventListener('change', e => {
       if (!isAdmin) { e.target.value = e.target.dataset.original || ''; return; }
@@ -1039,18 +1150,18 @@ function renderBracket() {
   }
 
   if (!poolPlayComplete()) {
-    const done = matches.filter(m => m.phase==='pool' && m.home_score!=null).length;
+    const done = matches.filter(m => m.phase==='pool' && m.home_score!=null && m.away_score!=null).length;
     notice.innerHTML = `<strong>Bracket locked.</strong> ${done} of 30 pool matches complete.`;
   } else {
     notice.innerHTML = '<strong>Bracket is live!</strong> Winners auto-advance.';
   }
 
-  const qf1 = matches.find(m => m.id==='QF1');
-  const qf2 = matches.find(m => m.id==='QF2');
-  const sf1 = matches.find(m => m.id==='SF1');
-  const sf2 = matches.find(m => m.id==='SF2');
-  const thirdPlace = matches.find(m => m.id==='3P');
-  const final = matches.find(m => m.id==='F');
+  const qf1 = findMatchByKey('QF1');
+  const qf2 = findMatchByKey('QF2');
+  const sf1 = findMatchByKey('SF1');
+  const sf2 = findMatchByKey('SF2');
+  const thirdPlace = findMatchByKey('3P');
+  const final = findMatchByKey('F');
 
   container.innerHTML = `
     <div class="bracket-round">
@@ -1088,7 +1199,7 @@ function bracketMatchHTML(m, isFinal=false) {
 
   return `<div class="bracket-match ${isFinal?'final':''}">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
-      <span style="font-size:0.7rem;letter-spacing:1px;color:rgba(255,255,255,0.5);">${m.label || m.id}</span>
+      <span style="font-size:0.7rem;letter-spacing:1px;color:rgba(255,255,255,0.5);">${m.label || m.round}</span>
       <span class="court-badge">CT ${m.court}</span>
     </div>
     <div class="bracket-team ${hW?'winner':''}">
@@ -1109,9 +1220,9 @@ function renderPlayers() {
     return;
   }
 
-  let html = '<h3 style="color:var(--py-green);">Pool A</h3>';
+  let html = '<h3 style="color:var(--green);">Pool A</h3>';
   teams.filter(t => t.pool === 'A').forEach(t => { html += playerCardHTML(t); });
-  html += '<h3 style="color:var(--py-green); margin-top:1.5rem;">Pool B</h3>';
+  html += '<h3 style="color:var(--green); margin-top:1.5rem;">Pool B</h3>';
   teams.filter(t => t.pool === 'B').forEach(t => { html += playerCardHTML(t); });
   container.innerHTML = html;
 }
@@ -1137,7 +1248,7 @@ function renderAdminTeams() {
   }
 
   tbody.innerHTML = teams.map(t => `<tr>
-    <td><strong style="color:var(--py-accent);">${t.pool}</strong></td>
+    <td><strong style="color:var(--gold);">${t.pool}</strong></td>
     <td><strong>${esc(t.name)}</strong></td>
     <td>${esc(t.p1_name)}</td>
     <td>${esc(t.p2_name)}</td>
@@ -1174,8 +1285,8 @@ function adminLogout() {
 // ============================================================
 async function clearAllData() {
   if (!confirm('Delete ALL teams and matches? This cannot be undone.')) return;
-  await sb.from('tournament_matches').delete().neq('id', '');
-  await sb.from('tournament_teams').delete().neq('id', '');
+  await sb.from('matches').delete().eq('tournament_id', TOURNAMENT_ID);
+  await sb.from('tournament_teams').delete().eq('tournament_id', TOURNAMENT_ID);
   teams = [];
   matches = [];
   renderAll();
